@@ -1,0 +1,2977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="dynamic-page-title">CardVault — Virtual Card & Credit Admin System</title>
+    <!-- Dynamic Browser Tab Icon (Web Icon Changer updates this live) -->
+    <link id="dynamic-favicon" rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%234f46e5'/%3E%3Ctext x='50%25' y='54%25' dominant-baseline='middle' text-anchor='middle' font-size='34'%3E%F0%9F%92%B3%3C/text%3E%3C/svg%3E">
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        /* Theme CSS Variables — Controlled dynamically by the Theme Changer */
+        :root {
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --accent-primary: #4f46e5;
+            --accent-hover: #4338ca;
+            --accent-soft: #eef2ff;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #cbd5e1;
+        }
+
+        [data-theme="midnight"] {
+            --bg-app: #090d16;
+            --bg-surface: #111827;
+            --bg-subtle: #1e293b;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-subtle: #1f2937;
+            --accent-primary: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-soft: rgba(99, 102, 241, 0.16);
+            --sidebar-bg: #070a12;
+            --sidebar-text: #cbd5e1;
+        }
+
+        [data-theme="daylight"] {
+            --bg-app: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f1f5f9;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-subtle: #e2e8f0;
+            --accent-primary: #2563eb;
+            --accent-hover: #1d4ed8;
+            --accent-soft: #eff6ff;
+            --sidebar-bg: #1e293b;
+            --sidebar-text: #e2e8f0;
+        }
+
+        [data-theme="royal"] {
+            --bg-app: #faf5ff;
+            --bg-surface: #ffffff;
+            --bg-subtle: #f3e8ff;
+            --text-main: #1e1b4b;
+            --text-muted: #6b21a8;
+            --border-subtle: #e9d5ff;
+            --accent-primary: #7c3aed;
+            --accent-hover: #6d28d9;
+            --accent-soft: #f3e8ff;
+            --sidebar-bg: #2e1065;
+            --sidebar-text: #e9d5ff;
+        }
+
+        [data-theme="emerald"] {
+            --bg-app: #041310;
+            --bg-surface: #0a201b;
+            --bg-subtle: #11322a;
+            --text-main: #ecfdf5;
+            --text-muted: #6ee7b7;
+            --border-subtle: #164439;
+            --accent-primary: #10b981;
+            --accent-hover: #059669;
+            --accent-soft: rgba(16, 185, 129, 0.16);
+            --sidebar-bg: #030e0c;
+            --sidebar-text: #a7f3d0;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        .themed-surface {
+            background-color: var(--bg-surface);
+            border-color: var(--border-subtle);
+            color: var(--text-main);
+        }
+
+        .themed-subtle {
+            background-color: var(--bg-subtle);
+            border-color: var(--border-subtle);
+        }
+
+        .themed-muted {
+            color: var(--text-muted);
+        }
+
+        .themed-sidebar {
+            background-color: var(--sidebar-bg);
+            color: var(--sidebar-text);
+        }
+
+        .themed-btn-primary {
+            background-color: var(--accent-primary);
+            color: #ffffff;
+        }
+
+        .themed-btn-primary:hover {
+            background-color: var(--accent-hover);
+        }
+
+        .themed-accent-text {
+            color: var(--accent-primary);
+        }
+
+        .themed-accent-soft {
+            background-color: var(--accent-soft);
+        }
+
+        /* Custom subtle scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.45);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(100, 116, 139, 0.7);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.22s ease-out forwards;
+        }
+
+        /* Virtual card shimmer effect */
+        .card-shimmer {
+            background: linear-gradient(125deg, #4f46e5 0%, #7c3aed 52%, #0ea5e9 100%);
+        }
+    </style>
+</head>
+<body class="min-h-screen antialiased selection:bg-indigo-500 selection:text-white">
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 1: AUTHENTICATION & REGISTRATION PORTAL (USER LOGIN / REGISTER / ADMIN) -->
+    <!-- ===================================================================== -->
+    <div id="auth-view" class="min-h-screen flex items-center justify-center p-4 sm:p-6">
+        <div class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 rounded-3xl overflow-hidden shadow-2xl border themed-surface">
+
+            <!-- Left Showcase Panel -->
+            <div class="lg:col-span-5 themed-sidebar p-7 sm:p-9 flex flex-col justify-between relative overflow-hidden">
+                <div class="relative z-10 space-y-6">
+                    <!-- Brand Header with Dynamic Site Icon -->
+                    <div class="flex items-center gap-3">
+                        <div class="site-icon-badge w-11 h-11 rounded-2xl themed-btn-primary flex items-center justify-center text-xl font-bold shadow-lg">
+                            💳
+                        </div>
+                        <div>
+                            <h1 class="text-lg font-bold tracking-tight text-white">CardVault</h1>
+                            <p class="text-xs text-slate-400">Virtual Card & Credit Platform</p>
+                        </div>
+                    </div>
+
+                    <div class="space-y-3 pt-2">
+                        <span class="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-400/20">
+                            <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                            Instant Credit & Card Hub
+                        </span>
+                        <h2 class="text-2xl sm:text-3xl font-extrabold text-white leading-tight">
+                            Manage credits, virtual cards & live store items.
+                        </h2>
+                        <p class="text-sm text-slate-400 leading-relaxed">
+                            Register a member account to claim published virtual cards & passes with credits, or sign in as Admin to control credits, bans, items, announcements, and site appearance.
+                        </p>
+                    </div>
+
+                    <!-- Virtual Card Visual Preview -->
+                    <div class="card-shimmer rounded-2xl p-5 text-white shadow-xl border border-white/15">
+                        <div class="flex items-center justify-between text-xs opacity-90 mb-6">
+                            <span class="font-semibold tracking-wider uppercase">CardVault Virtual</span>
+                            <i data-lucide="wifi" class="w-4 h-4 rotate-90"></i>
+                        </div>
+                        <div class="font-mono text-base sm:text-lg tracking-widest mb-4">
+                            4829 •••• •••• 9042
+                        </div>
+                        <div class="flex items-center justify-between text-xs">
+                            <div>
+                                <div class="opacity-70 text-[10px] uppercase">Member Tier</div>
+                                <div class="font-semibold">Credit Pass</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="opacity-70 text-[10px] uppercase">Status</div>
+                                <div class="font-semibold text-emerald-200">Active Ready</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Admin Auto-Fill Helper -->
+                <div class="relative z-10 mt-8 p-4 rounded-2xl bg-slate-800/80 border border-slate-700/80 space-y-2.5">
+                    <div class="flex items-center justify-between gap-2">
+                        <span class="text-xs font-semibold text-amber-300 flex items-center gap-1.5">
+                            <i data-lucide="shield-check" class="w-4 h-4"></i>
+                            Demo Admin Credentials
+                        </span>
+                        <button type="button" onclick="autoFillAdmin()" class="text-xs font-semibold px-2.5 py-1 rounded-lg bg-amber-500/20 hover:bg-amber-500/30 text-amber-200 border border-amber-400/30 transition cursor-pointer">
+                            Auto-Fill Admin
+                        </button>
+                    </div>
+                    <div class="text-[11px] font-mono text-slate-300 space-y-0.5">
+                        <div>Email: <span class="text-white">admin@gmail.com</span></div>
+                        <div>User: <span class="text-white">admin</span> | Pass: <span class="text-white">admin</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Auth Forms Panel -->
+            <div class="lg:col-span-7 p-6 sm:p-9 flex flex-col justify-center">
+                <!-- 3-Tab Switcher: User Login | User Register | Admin Login -->
+                <div class="grid grid-cols-3 gap-1.5 p-1.5 rounded-2xl themed-subtle border mb-6">
+                    <button type="button" id="tab-user-login" onclick="switchAuthTab('user-login')"
+                        class="auth-tab py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5 themed-btn-primary shadow-sm">
+                        <i data-lucide="log-in" class="w-4 h-4"></i>
+                        <span>User Login</span>
+                    </button>
+                    <button type="button" id="tab-user-register" onclick="switchAuthTab('user-register')"
+                        class="auth-tab py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5 themed-muted hover:text-current">
+                        <i data-lucide="user-plus" class="w-4 h-4"></i>
+                        <span>User Register</span>
+                    </button>
+                    <button type="button" id="tab-admin-login" onclick="switchAuthTab('admin-login')"
+                        class="auth-tab py-2.5 px-3 rounded-xl text-xs sm:text-sm font-semibold transition flex items-center justify-center gap-1.5 themed-muted hover:text-current">
+                        <i data-lucide="shield" class="w-4 h-4"></i>
+                        <span>Admin Login</span>
+                    </button>
+                </div>
+
+                <!-- Ban / Error Alert Box -->
+                <div id="auth-alert" class="hidden mb-5 p-4 rounded-2xl border text-xs sm:text-sm fade-in"></div>
+
+                <!-- FORM 1: USER LOGIN -->
+                <form id="user-login-form" onsubmit="handleUserLogin(event)" class="space-y-4">
+                    <div>
+                        <h3 class="text-xl font-bold">Welcome back, Member</h3>
+                        <p class="text-xs sm:text-sm themed-muted mt-0.5">Sign in with your email or username to view your credit wallet & published cards.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Email or Username</label>
+                        <div class="relative">
+                            <i data-lucide="user" class="w-4 h-4 themed-muted absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="text" id="ulog-identifier" required placeholder="e.g. alex@example.com or alex_card"
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Password</label>
+                        <div class="relative">
+                            <i data-lucide="lock" class="w-4 h-4 themed-muted absolute left-3.5 top-1/2 -translate-y-1/2"></i>
+                            <input type="password" id="ulog-password" required placeholder="Enter your password"
+                                class="w-full pl-10 pr-4 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center justify-between gap-2 text-xs pt-1">
+                        <span class="themed-muted">Demo User: <strong class="font-mono">alex@example.com</strong> / <strong class="font-mono">user123</strong></span>
+                        <button type="button" onclick="quickFillDemoUser()" class="font-semibold themed-accent-text hover:underline cursor-pointer">
+                            Fill Demo User
+                        </button>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl font-semibold text-sm themed-btn-primary shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <span>Sign In to User Portal</span>
+                        <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                    </button>
+                </form>
+
+                <!-- FORM 2: USER REGISTER -->
+                <form id="user-register-form" onsubmit="handleUserRegister(event)" class="hidden space-y-4">
+                    <div>
+                        <h3 class="text-xl font-bold">Create Member Account</h3>
+                        <p class="text-xs sm:text-sm themed-muted mt-0.5">Register now and receive <span class="font-semibold text-emerald-500">100 Welcome Credits</span> automatically.</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                        <div>
+                            <label class="block text-xs font-semibold mb-1.5">Full Name</label>
+                            <input type="text" id="ureg-name" required placeholder="Jordan Taylor"
+                                class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-semibold mb-1.5">Username</label>
+                            <input type="text" id="ureg-username" required placeholder="jordan_v"
+                                class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Email Address</label>
+                        <input type="email" id="ureg-email" required placeholder="jordan@example.com"
+                            class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Password</label>
+                        <input type="password" id="ureg-password" required minlength="4" placeholder="Create a password (min 4 chars)"
+                            class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl font-semibold text-sm themed-btn-primary shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="user-check" class="w-4 h-4"></i>
+                        <span>Register & Claim 100 Credits</span>
+                    </button>
+                </form>
+
+                <!-- FORM 3: ADMIN LOGIN -->
+                <form id="admin-login-form" onsubmit="handleAdminLogin(event)" class="hidden space-y-4">
+                    <div>
+                        <h3 class="text-xl font-bold">System Administrator Login</h3>
+                        <p class="text-xs sm:text-sm themed-muted mt-0.5">Access full credit controls, user ban enforcement, item publishing, announcements, and site appearance.</p>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Admin Email or Username</label>
+                        <input type="text" id="alog-identifier" required placeholder="admin@gmail.com or admin"
+                            class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-semibold mb-1.5">Admin Password</label>
+                        <input type="password" id="alog-password" required placeholder="admin"
+                            class="w-full px-3.5 py-2.5 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                    </div>
+
+                    <div class="flex items-center justify-between text-xs pt-1">
+                        <span class="themed-muted">Default: <strong class="font-mono">admin@gmail.com</strong> / <strong class="font-mono">admin</strong></span>
+                        <button type="button" onclick="autoFillAdmin()" class="font-semibold text-amber-500 hover:underline cursor-pointer">
+                            Auto-Fill Admin
+                        </button>
+                    </div>
+
+                    <button type="submit" class="w-full py-3 px-4 rounded-xl font-semibold text-sm bg-slate-900 hover:bg-slate-800 text-white border border-slate-700 shadow-md transition flex items-center justify-center gap-2 cursor-pointer">
+                        <i data-lucide="shield-alert" class="w-4 h-4 text-amber-400"></i>
+                        <span>Enter Admin Panel</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 2: USER PORTAL (NAVIGATION: OverView & Dashboard + Published Items) -->
+    <!-- ===================================================================== -->
+    <div id="user-view" class="hidden min-h-screen flex flex-col lg:flex-row">
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="user-sidebar-backdrop" onclick="toggleUserSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
+
+        <!-- User Sidebar -->
+        <aside id="user-sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 themed-sidebar flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 shrink-0">
+            <div class="p-5 space-y-6">
+                <!-- Brand -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="site-icon-badge w-10 h-10 rounded-xl themed-btn-primary flex items-center justify-center text-lg font-bold shadow">
+                            💳
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-sm tracking-tight">CardVault</div>
+                            <div class="text-[11px] text-slate-400">Member Portal</div>
+                        </div>
+                    </div>
+                    <button onclick="toggleUserSidebar(false)" class="lg:hidden text-slate-400 hover:text-white p-1">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Logged-in Member Mini Card -->
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 space-y-2">
+                    <div class="flex items-center justify-between">
+                        <span id="u-side-name" class="text-xs font-bold text-white truncate">Member</span>
+                        <span id="u-side-id" class="text-[10px] font-mono px-2 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300">USR-001</span>
+                    </div>
+                    <div class="text-[11px] text-slate-400 truncate" id="u-side-handle">@member</div>
+                    <div class="pt-1 flex items-center justify-between border-t border-white/10">
+                        <span class="text-[11px] text-slate-400">Balance</span>
+                        <span id="u-side-credits" class="text-sm font-extrabold font-mono text-emerald-400">0 CR</span>
+                    </div>
+                </div>
+
+                <!-- Required User Categories: OverView & Dashboard -->
+                <nav class="space-y-1.5">
+                    <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Categories</div>
+
+                    <button type="button" id="u-nav-overview" onclick="switchUserCategory('overview')"
+                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer themed-btn-primary shadow">
+                        <i data-lucide="layout-grid" class="w-4 h-4"></i>
+                        <span>OverView</span>
+                    </button>
+
+                    <button type="button" id="u-nav-dashboard" onclick="switchUserCategory('dashboard')"
+                        class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer text-slate-300 hover:bg-white/10">
+                        <i data-lucide="wallet" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-5 border-t border-white/10 space-y-2">
+                <button type="button" onclick="logoutToAuth('Switch to Admin Login?')"
+                    class="w-full flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition cursor-pointer">
+                    <i data-lucide="log-out" class="w-4 h-4"></i>
+                    <span>Sign Out</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- User Main Content -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- Top Header -->
+            <header class="sticky top-0 z-20 border-b themed-surface backdrop-blur-md px-4 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleUserSidebar(true)" class="lg:hidden p-2 rounded-xl border themed-subtle cursor-pointer">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div>
+                        <h2 id="user-header-title" class="text-base sm:text-lg font-bold">OverView</h2>
+                        <p id="user-header-sub" class="text-xs themed-muted hidden sm:block">Your virtual cards, active announcements & published store items</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2.5 sm:gap-3">
+                    <div class="px-3.5 py-1.5 rounded-xl themed-accent-soft border border-indigo-500/20 flex items-center gap-2">
+                        <i data-lucide="coins" class="w-4 h-4 themed-accent-text"></i>
+                        <span id="u-top-credits" class="font-mono font-bold text-xs sm:text-sm themed-accent-text">0 Credits</span>
+                    </div>
+                    <span id="u-top-status" class="hidden sm:inline-flex items-center gap-1.5 text-xs font-semibold px-3 py-1.5 rounded-full bg-emerald-500/15 text-emerald-500">
+                        <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+                        Active
+                    </span>
+                </div>
+            </header>
+
+            <!-- Live Announcement Banner (User View) -->
+            <div id="user-live-banner" class="hidden px-4 sm:px-7 pt-4"></div>
+
+            <!-- USER CATEGORY 1: OVERVIEW -->
+            <main id="user-cat-overview" class="p-4 sm:p-7 space-y-7 fade-in">
+                <!-- Welcome & Credit Hero Grid -->
+                <div class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+                    <div class="xl:col-span-7 rounded-2xl border themed-surface p-5 sm:p-6 flex flex-col justify-between gap-5 shadow-sm">
+                        <div class="flex flex-wrap items-start justify-between gap-3">
+                            <div>
+                                <span class="text-xs font-semibold uppercase tracking-wider themed-accent-text">Member OverView</span>
+                                <h3 id="u-ov-welcome" class="text-xl sm:text-2xl font-extrabold mt-1">Hello, Member!</h3>
+                                <p class="text-xs sm:text-sm themed-muted mt-1">
+                                    Member ID: <span id="u-ov-id" class="font-mono font-semibold">USR-001</span> • Username: <span id="u-ov-username" class="font-mono font-semibold">@member</span>
+                                </p>
+                            </div>
+                            <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-500 border border-emerald-500/25">
+                                <i data-lucide="badge-check" class="w-3.5 h-3.5"></i>
+                                Active Standing
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                            <div class="p-3.5 rounded-xl themed-subtle border">
+                                <div class="text-[11px] themed-muted">Available Credits</div>
+                                <div id="u-ov-balance" class="text-xl font-extrabold font-mono mt-0.5 themed-accent-text">0</div>
+                            </div>
+                            <div class="p-3.5 rounded-xl themed-subtle border">
+                                <div class="text-[11px] themed-muted">Published Items</div>
+                                <div id="u-ov-pub-count" class="text-xl font-extrabold font-mono mt-0.5">0</div>
+                            </div>
+                            <div class="p-3.5 rounded-xl themed-subtle border">
+                                <div class="text-[11px] themed-muted">Items Claimed</div>
+                                <div id="u-ov-claimed-count" class="text-xl font-extrabold font-mono mt-0.5 text-emerald-500">0</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Virtual Card Preview -->
+                    <div class="xl:col-span-5 card-shimmer rounded-2xl p-6 text-white flex flex-col justify-between shadow-lg">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <div class="text-[11px] uppercase tracking-widest opacity-80">Virtual Credit Card</div>
+                                <div id="u-card-holder" class="text-sm font-bold mt-0.5">MEMBER NAME</div>
+                            </div>
+                            <i data-lucide="credit-card" class="w-6 h-6 opacity-90"></i>
+                        </div>
+                        <div class="my-6 font-mono text-lg sm:text-xl tracking-widest">
+                            5412 •••• •••• <span id="u-card-last4">1001</span>
+                        </div>
+                        <div class="flex items-end justify-between text-xs">
+                            <div>
+                                <div class="text-[10px] uppercase opacity-75">Credit Balance</div>
+                                <div id="u-card-credits" class="text-lg font-extrabold font-mono">0 CR</div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-[10px] uppercase opacity-75">Portal Access</div>
+                                <div class="font-semibold">Verified Member</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Published Storefront Items Section -->
+                <section class="space-y-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h3 class="text-lg font-bold flex items-center gap-2">
+                                <i data-lucide="store" class="w-5 h-5 themed-accent-text"></i>
+                                <span>Published Storefront Items</span>
+                            </h3>
+                            <p class="text-xs themed-muted">Items published by the Admin are shown live here. Claim virtual cards, passes, or perks using your credits.</p>
+                        </div>
+
+                        <!-- Category Filter Pills -->
+                        <div id="user-category-filters" class="flex items-center gap-1.5 overflow-x-auto pb-1">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+
+                    <div id="user-published-items-grid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                        <!-- Populated dynamically -->
+                    </div>
+                </section>
+
+                <!-- Active System Announcements Feed -->
+                <section class="rounded-2xl border themed-surface p-5 sm:p-6 space-y-4 shadow-sm">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-base font-bold flex items-center gap-2">
+                            <i data-lucide="megaphone" class="w-5 h-5 text-amber-500"></i>
+                            <span>Active Announcements</span>
+                        </h3>
+                        <span id="u-ann-count" class="text-xs font-semibold px-2.5 py-1 rounded-full themed-subtle border">0 Active</span>
+                    </div>
+                    <div id="user-announcements-list" class="space-y-3">
+                        <!-- Populated dynamically -->
+                    </div>
+                </section>
+            </main>
+
+            <!-- USER CATEGORY 2: DASHBOARD -->
+            <main id="user-cat-dashboard" class="hidden p-4 sm:p-7 space-y-6 fade-in">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                        <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                            <span>Current Credit Balance</span>
+                            <i data-lucide="wallet" class="w-4 h-4 themed-accent-text"></i>
+                        </div>
+                        <div id="u-dash-balance" class="text-2xl sm:text-3xl font-extrabold font-mono themed-accent-text">0</div>
+                        <div class="text-xs themed-muted mt-1">Ready for item claims</div>
+                    </div>
+
+                    <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                        <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                            <span>Total Credits Received</span>
+                            <i data-lucide="arrow-down-left" class="w-4 h-4 text-emerald-500"></i>
+                        </div>
+                        <div id="u-dash-credited" class="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-500">+0</div>
+                        <div class="text-xs themed-muted mt-1">Welcome & admin grants</div>
+                    </div>
+
+                    <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                        <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                            <span>Total Credits Spent / Deducted</span>
+                            <i data-lucide="arrow-up-right" class="w-4 h-4 text-rose-500"></i>
+                        </div>
+                        <div id="u-dash-spent" class="text-2xl sm:text-3xl font-extrabold font-mono text-rose-500">-0</div>
+                        <div class="text-xs themed-muted mt-1">Claims & adjustments</div>
+                    </div>
+                </div>
+
+                <!-- Account Details + Personal Transaction History -->
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <div class="lg:col-span-4 rounded-2xl border themed-surface p-5 space-y-3.5 shadow-sm h-fit">
+                        <h3 class="text-base font-bold flex items-center gap-2">
+                            <i data-lucide="id-card" class="w-4 h-4 themed-accent-text"></i>
+                            <span>Account Profile</span>
+                        </h3>
+                        <div class="space-y-2.5 text-xs">
+                            <div class="flex justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+                                <span class="themed-muted">Full Name</span>
+                                <span id="u-prof-name" class="font-semibold">-</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+                                <span class="themed-muted">Username</span>
+                                <span id="u-prof-user" class="font-mono font-semibold">-</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+                                <span class="themed-muted">Email</span>
+                                <span id="u-prof-email" class="font-semibold truncate max-w-[170px]">-</span>
+                            </div>
+                            <div class="flex justify-between py-2 border-b border-dashed border-slate-200 dark:border-slate-700">
+                                <span class="themed-muted">Member ID</span>
+                                <span id="u-prof-id" class="font-mono font-semibold">-</span>
+                            </div>
+                            <div class="flex justify-between py-2">
+                                <span class="themed-muted">Joined</span>
+                                <span id="u-prof-joined" class="font-semibold">-</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-8 rounded-2xl border themed-surface overflow-hidden shadow-sm">
+                        <div class="p-5 border-b border-inherit flex items-center justify-between">
+                            <div>
+                                <h3 class="text-base font-bold">Transaction & Claim History</h3>
+                                <p class="text-xs themed-muted">Every credit grant, deduction, and claimed item on your account</p>
+                            </div>
+                            <span id="u-tx-count" class="text-xs font-mono px-2.5 py-1 rounded-lg themed-subtle border">0 entries</span>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead>
+                                    <tr class="text-[11px] uppercase tracking-wider themed-muted border-b border-inherit themed-subtle">
+                                        <th class="py-3 px-4">Type</th>
+                                        <th class="py-3 px-4">Description / Note</th>
+                                        <th class="py-3 px-4">Credits</th>
+                                        <th class="py-3 px-4 text-right">Date</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="u-dash-tx-body" class="divide-y divide-slate-200/60 dark:divide-slate-800 text-xs sm:text-sm">
+                                    <!-- Populated dynamically -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- VIEW 3: SYSTEM ADMIN PANEL                                            -->
+    <!-- ===================================================================== -->
+    <div id="admin-view" class="hidden min-h-screen flex flex-col lg:flex-row">
+        <!-- Mobile Sidebar Backdrop -->
+        <div id="admin-sidebar-backdrop" onclick="toggleAdminSidebar(false)" class="fixed inset-0 bg-black/50 z-30 hidden lg:hidden"></div>
+
+        <!-- Admin Sidebar -->
+        <aside id="admin-sidebar" class="fixed lg:static inset-y-0 left-0 z-40 w-64 themed-sidebar flex flex-col justify-between transform -translate-x-full lg:translate-x-0 transition-transform duration-200 shrink-0">
+            <div class="p-5 space-y-6">
+                <!-- Brand -->
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                        <div class="site-icon-badge w-10 h-10 rounded-xl themed-btn-primary flex items-center justify-center text-lg font-bold shadow">
+                            💳
+                        </div>
+                        <div>
+                            <div class="font-bold text-white text-sm tracking-tight">CardVault</div>
+                            <div class="text-[11px] text-amber-300 font-medium">Admin Control Center</div>
+                        </div>
+                    </div>
+                    <button onclick="toggleAdminSidebar(false)" class="lg:hidden text-slate-400 hover:text-white p-1">
+                        <i data-lucide="x" class="w-5 h-5"></i>
+                    </button>
+                </div>
+
+                <!-- Admin Navigation -->
+                <nav class="space-y-1">
+                    <div class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-2">Administration</div>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-dashboard')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="gauge" class="w-4 h-4"></i>
+                        <span>Dashboard</span>
+                    </button>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-users')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="users" class="w-4 h-4"></i>
+                        <span>Users, Credits & Bans</span>
+                    </button>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-catalog')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="layers" class="w-4 h-4"></i>
+                        <span>Categories, Items & Publisher</span>
+                    </button>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-announcements')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="megaphone" class="w-4 h-4"></i>
+                        <span>Announcements</span>
+                    </button>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-appearance')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="palette" class="w-4 h-4"></i>
+                        <span>Theme & Icons Changer</span>
+                    </button>
+
+                    <button type="button" onclick="scrollAdminSection('adm-sec-logs')"
+                        class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-xs sm:text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition cursor-pointer">
+                        <i data-lucide="scroll-text" class="w-4 h-4"></i>
+                        <span>Audit Log</span>
+                    </button>
+                </nav>
+            </div>
+
+            <div class="p-4 border-t border-white/10 space-y-2">
+                <button type="button" onclick="openModal('reset-modal')"
+                    class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold bg-amber-500/15 hover:bg-amber-500/25 text-amber-300 border border-amber-500/30 transition cursor-pointer">
+                    <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                    <span>Reset Demo Data</span>
+                </button>
+                <button type="button" onclick="logoutToAuth()"
+                    class="w-full flex items-center justify-center gap-2 py-2 px-3 rounded-xl text-xs font-semibold bg-white/5 hover:bg-white/10 text-slate-200 border border-white/10 transition cursor-pointer">
+                    <i data-lucide="log-out" class="w-3.5 h-3.5"></i>
+                    <span>Sign Out Admin</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Admin Main Content -->
+        <div class="flex-1 flex flex-col min-w-0">
+            <!-- Admin Top Bar -->
+            <header class="sticky top-0 z-20 border-b themed-surface backdrop-blur-md px-4 sm:px-7 py-3.5 flex items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <button onclick="toggleAdminSidebar(true)" class="lg:hidden p-2 rounded-xl border themed-subtle cursor-pointer">
+                        <i data-lucide="menu" class="w-5 h-5"></i>
+                    </button>
+                    <div>
+                        <h1 class="text-base sm:text-lg font-bold flex items-center gap-2">
+                            <span>System Admin Panel</span>
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full bg-amber-500/15 text-amber-500 border border-amber-500/25">admin</span>
+                        </h1>
+                        <p class="text-xs themed-muted hidden sm:block">admin@gmail.com • Full credit, ban, publisher & appearance control</p>
+                    </div>
+                </div>
+
+                <div class="flex items-center gap-2">
+                    <button type="button" onclick="openCreateUserModal()"
+                        class="px-3 py-2 rounded-xl text-xs font-semibold themed-btn-primary shadow-sm flex items-center gap-1.5 transition cursor-pointer">
+                        <i data-lucide="user-plus" class="w-3.5 h-3.5"></i>
+                        <span class="hidden sm:inline">Add User</span>
+                    </button>
+                </div>
+            </header>
+
+            <div class="p-4 sm:p-7 space-y-8">
+                <!-- 1. ADMIN DASHBOARD & LIVE ANNOUNCEMENT BANNER -->
+                <section id="adm-sec-dashboard" class="space-y-4 fade-in">
+                    <div id="admin-live-banner"></div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+                        <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                                <span>Total Users</span>
+                                <i data-lucide="users" class="w-4 h-4 themed-accent-text"></i>
+                            </div>
+                            <div id="kpi-total-users" class="text-2xl sm:text-3xl font-extrabold font-mono">0</div>
+                            <div class="text-xs themed-muted mt-1">Registered members</div>
+                        </div>
+
+                        <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                                <span>Total Credits in Circulation</span>
+                                <i data-lucide="coins" class="w-4 h-4 text-emerald-500"></i>
+                            </div>
+                            <div id="kpi-total-credits" class="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-500">0</div>
+                            <div class="text-xs themed-muted mt-1">Across active wallets</div>
+                        </div>
+
+                        <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                                <span>Published Items</span>
+                                <i data-lucide="globe" class="w-4 h-4 text-sky-500"></i>
+                            </div>
+                            <div id="kpi-published-items" class="text-2xl sm:text-3xl font-extrabold font-mono text-sky-500">0</div>
+                            <div class="text-xs themed-muted mt-1">Live on user portal</div>
+                        </div>
+
+                        <div class="rounded-2xl border themed-surface p-5 shadow-sm">
+                            <div class="flex items-center justify-between text-xs themed-muted mb-2">
+                                <span>Banned Users</span>
+                                <i data-lucide="shield-x" class="w-4 h-4 text-rose-500"></i>
+                            </div>
+                            <div id="kpi-banned-users" class="text-2xl sm:text-3xl font-extrabold font-mono text-rose-500">0</div>
+                            <div class="text-xs themed-muted mt-1">Blocked from login</div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. USERS, CREDITS & BAN SYSTEM -->
+                <section id="adm-sec-users" class="rounded-2xl border themed-surface overflow-hidden shadow-sm space-y-0">
+                    <div class="p-5 sm:p-6 border-b border-inherit flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <div>
+                            <h2 class="text-lg font-bold flex items-center gap-2">
+                                <i data-lucide="users" class="w-5 h-5 themed-accent-text"></i>
+                                <span>Users, Credits & Ban Management</span>
+                            </h2>
+                            <p class="text-xs themed-muted mt-0.5">Grant or deduct credits, and ban/unban users with a custom reason. Banned users cannot sign in.</p>
+                        </div>
+
+                        <div class="flex flex-wrap items-center gap-2.5">
+                            <div class="relative">
+                                <i data-lucide="search" class="w-4 h-4 themed-muted absolute left-3 top-1/2 -translate-y-1/2"></i>
+                                <input type="text" id="user-search-input" oninput="renderAdminUsers()" placeholder="Search user, email, ID..."
+                                    class="pl-9 pr-3 py-2 rounded-xl border themed-subtle text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <select id="user-status-filter" onchange="renderAdminUsers()"
+                                class="px-3 py-2 rounded-xl border themed-subtle text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                <option value="all">All Statuses</option>
+                                <option value="active">Active Only</option>
+                                <option value="banned">Banned Only</option>
+                            </select>
+                            <button type="button" onclick="openCreateUserModal()"
+                                class="px-3.5 py-2 rounded-xl text-xs font-semibold themed-btn-primary flex items-center gap-1.5 cursor-pointer">
+                                <i data-lucide="plus" class="w-4 h-4"></i>
+                                <span>New User</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="text-[11px] uppercase tracking-wider themed-muted border-b border-inherit themed-subtle">
+                                    <th class="py-3 px-4">User</th>
+                                    <th class="py-3 px-4">ID & Joined</th>
+                                    <th class="py-3 px-4">Credits</th>
+                                    <th class="py-3 px-4">Status / Ban Reason</th>
+                                    <th class="py-3 px-4 text-right">Admin Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="admin-users-tbody" class="divide-y divide-slate-200/60 dark:divide-slate-800 text-xs sm:text-sm">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- 3. CATEGORIES, ITEMS & WEBSITE ITEM PUBLISHER -->
+                <section id="adm-sec-catalog" class="space-y-5">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                        <div>
+                            <h2 class="text-lg font-bold flex items-center gap-2">
+                                <i data-lucide="layers" class="w-5 h-5 themed-accent-text"></i>
+                                <span>Categories, Items & Website Item Publisher</span>
+                            </h2>
+                            <p class="text-xs themed-muted mt-0.5">Create categories, add virtual card/perk items, and publish/unpublish items live onto the user portal.</p>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button type="button" onclick="openCategoryModal()"
+                                class="px-3.5 py-2 rounded-xl text-xs font-semibold border themed-surface hover:opacity-90 flex items-center gap-1.5 shadow-xs cursor-pointer">
+                                <i data-lucide="folder-plus" class="w-4 h-4 themed-accent-text"></i>
+                                <span>Add Category</span>
+                            </button>
+                            <button type="button" onclick="openItemModal()"
+                                class="px-3.5 py-2 rounded-xl text-xs font-semibold themed-btn-primary flex items-center gap-1.5 shadow-xs cursor-pointer">
+                                <i data-lucide="package-plus" class="w-4 h-4"></i>
+                                <span>Add Item</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 xl:grid-cols-12 gap-5">
+                        <!-- Categories Panel (4 cols) -->
+                        <div class="xl:col-span-4 rounded-2xl border themed-surface p-5 space-y-3.5 shadow-sm h-fit">
+                            <div class="flex items-center justify-between">
+                                <h3 class="text-sm font-bold flex items-center gap-2">
+                                    <i data-lucide="tag" class="w-4 h-4 themed-accent-text"></i>
+                                    <span>Categories</span>
+                                </h3>
+                                <span id="adm-cat-count" class="text-xs font-mono px-2 py-0.5 rounded-full themed-subtle border">0</span>
+                            </div>
+                            <div id="admin-categories-list" class="space-y-2.5">
+                                <!-- Populated dynamically -->
+                            </div>
+                        </div>
+
+                        <!-- Items & Website Item Publisher Panel (8 cols) -->
+                        <div class="xl:col-span-8 rounded-2xl border themed-surface overflow-hidden shadow-sm">
+                            <div class="p-5 border-b border-inherit flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <div>
+                                    <h3 class="text-sm font-bold flex items-center gap-2">
+                                        <i data-lucide="send" class="w-4 h-4 text-emerald-500"></i>
+                                        <span>Items & Website Item Publisher</span>
+                                    </h3>
+                                    <p class="text-xs themed-muted">Toggle <strong>Published</strong> to push items live to the User OverView or keep as <strong>Draft</strong>.</p>
+                                </div>
+                                <select id="admin-item-filter" onchange="renderAdminCatalog()"
+                                    class="px-3 py-1.5 rounded-xl border themed-subtle text-xs font-semibold focus:outline-none">
+                                    <option value="all">All Items</option>
+                                    <option value="published">Published (Live)</option>
+                                    <option value="draft">Draft (Unpublished)</option>
+                                </select>
+                            </div>
+
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-[11px] uppercase tracking-wider themed-muted border-b border-inherit themed-subtle">
+                                            <th class="py-3 px-4">Item</th>
+                                            <th class="py-3 px-4">Category</th>
+                                            <th class="py-3 px-4">Cost & Stock</th>
+                                            <th class="py-3 px-4">Publisher Status</th>
+                                            <th class="py-3 px-4 text-right">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="admin-items-tbody" class="divide-y divide-slate-200/60 dark:divide-slate-800 text-xs sm:text-sm">
+                                        <!-- Populated dynamically -->
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 4. ANNOUNCEMENTS MANAGEMENT -->
+                <section id="adm-sec-announcements" class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                    <div class="lg:col-span-5 rounded-2xl border themed-surface p-5 sm:p-6 shadow-sm h-fit">
+                        <h2 class="text-base font-bold flex items-center gap-2 mb-4">
+                            <i data-lucide="megaphone" class="w-5 h-5 text-amber-500"></i>
+                            <span>Post System Announcement</span>
+                        </h2>
+                        <form id="announcement-form" onsubmit="handleCreateAnnouncement(event)" class="space-y-3.5">
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Title</label>
+                                <input type="text" id="ann-title" required placeholder="e.g., Double Credit Drop Event!"
+                                    class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Priority Level</label>
+                                <select id="ann-priority" class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                    <option value="info">Info (Blue)</option>
+                                    <option value="warning">Warning (Amber)</option>
+                                    <option value="urgent">Urgent (Rose)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-semibold mb-1">Message</label>
+                                <textarea id="ann-message" rows="3" required placeholder="Write the announcement message visible to users..."
+                                    class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"></textarea>
+                            </div>
+                            <button type="submit" class="w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-semibold themed-btn-primary shadow-sm flex items-center justify-center gap-2 cursor-pointer">
+                                <i data-lucide="send" class="w-4 h-4"></i>
+                                <span>Publish Announcement</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <div class="lg:col-span-7 rounded-2xl border themed-surface p-5 sm:p-6 shadow-sm space-y-3.5">
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-base font-bold">Manage Announcements</h3>
+                            <span id="adm-ann-total" class="text-xs font-mono px-2.5 py-1 rounded-full themed-subtle border">0 total</span>
+                        </div>
+                        <div id="admin-announcements-list" class="space-y-3">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5. APPEARANCE & ICONS CHANGER (THEME + SITE ICON + WEB ICON) -->
+                <section id="adm-sec-appearance" class="rounded-2xl border themed-surface p-5 sm:p-6 shadow-sm space-y-6">
+                    <div>
+                        <h2 class="text-lg font-bold flex items-center gap-2">
+                            <i data-lucide="palette" class="w-5 h-5 themed-accent-text"></i>
+                            <span>Theme Changer, Site Icon Changer & Web Icon Changer</span>
+                        </h2>
+                        <p class="text-xs themed-muted mt-0.5">Customize the platform color theme, brand logo icon (Site Icon), and browser tab favicon + page title (Web Icon).</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+                        <!-- A. Theme Changer -->
+                        <div class="p-4 rounded-2xl border themed-subtle space-y-3.5">
+                            <div class="flex items-center gap-2 font-bold text-sm">
+                                <i data-lucide="swatch-book" class="w-4 h-4 themed-accent-text"></i>
+                                <span>Theme Changer</span>
+                            </div>
+                            <p class="text-xs themed-muted">Applies live across Authentication, User Portal, and Admin Panel.</p>
+
+                            <div class="grid grid-cols-1 gap-2" id="theme-options-container">
+                                <button type="button" onclick="applyTheme('midnight', true)" data-theme-btn="midnight"
+                                    class="theme-choice-btn flex items-center justify-between p-3 rounded-xl border text-left text-xs font-semibold transition cursor-pointer">
+                                    <span class="flex items-center gap-2.5">
+                                        <span class="w-4 h-4 rounded-full bg-indigo-500 ring-2 ring-slate-800"></span>
+                                        <span>Midnight Slate</span>
+                                    </span>
+                                    <span class="text-[10px] opacity-75">Dark</span>
+                                </button>
+
+                                <button type="button" onclick="applyTheme('daylight', true)" data-theme-btn="daylight"
+                                    class="theme-choice-btn flex items-center justify-between p-3 rounded-xl border text-left text-xs font-semibold transition cursor-pointer">
+                                    <span class="flex items-center gap-2.5">
+                                        <span class="w-4 h-4 rounded-full bg-blue-600 ring-2 ring-blue-200"></span>
+                                        <span>Crisp Daylight</span>
+                                    </span>
+                                    <span class="text-[10px] opacity-75">Light</span>
+                                </button>
+
+                                <button type="button" onclick="applyTheme('royal', true)" data-theme-btn="royal"
+                                    class="theme-choice-btn flex items-center justify-between p-3 rounded-xl border text-left text-xs font-semibold transition cursor-pointer">
+                                    <span class="flex items-center gap-2.5">
+                                        <span class="w-4 h-4 rounded-full bg-violet-600 ring-2 ring-purple-200"></span>
+                                        <span>Royal Indigo</span>
+                                    </span>
+                                    <span class="text-[10px] opacity-75">Violet</span>
+                                </button>
+
+                                <button type="button" onclick="applyTheme('emerald', true)" data-theme-btn="emerald"
+                                    class="theme-choice-btn flex items-center justify-between p-3 rounded-xl border text-left text-xs font-semibold transition cursor-pointer">
+                                    <span class="flex items-center gap-2.5">
+                                        <span class="w-4 h-4 rounded-full bg-emerald-500 ring-2 ring-emerald-900"></span>
+                                        <span>Emerald Cyber</span>
+                                    </span>
+                                    <span class="text-[10px] opacity-75">Neon</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- B. Site Icon Changer (Brand Mark in Sidebar / Auth) -->
+                        <div class="p-4 rounded-2xl border themed-subtle space-y-3.5">
+                            <div class="flex items-center gap-2 font-bold text-sm">
+                                <i data-lucide="app-window" class="w-4 h-4 text-amber-500"></i>
+                                <span>Site Icon Changer</span>
+                            </div>
+                            <p class="text-xs themed-muted">Changes the main brand emblem icon inside the website interface.</p>
+
+                            <div class="flex items-center gap-3 p-3 rounded-xl border themed-surface">
+                                <div class="site-icon-badge w-12 h-12 rounded-2xl themed-btn-primary flex items-center justify-center text-2xl shadow">
+                                    💳
+                                </div>
+                                <div class="text-xs">
+                                    <div class="font-bold">Current Site Icon</div>
+                                    <div id="current-site-icon-label" class="themed-muted font-mono">💳</div>
+                                </div>
+                            </div>
+
+                            <div>
+                                <div class="text-[11px] font-semibold mb-1.5">Preset Site Icons</div>
+                                <div class="grid grid-cols-6 gap-1.5">
+                                    <button type="button" onclick="applySiteIcon('💳', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">💳</button>
+                                    <button type="button" onclick="applySiteIcon('⚡', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">⚡</button>
+                                    <button type="button" onclick="applySiteIcon('💎', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">💎</button>
+                                    <button type="button" onclick="applySiteIcon('🛡️', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">🛡️</button>
+                                    <button type="button" onclick="applySiteIcon('🚀', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">🚀</button>
+                                    <button type="button" onclick="applySiteIcon('👑', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer">👑</button>
+                                </div>
+                            </div>
+
+                            <form onsubmit="handleCustomSiteIcon(event)" class="flex gap-2 pt-1">
+                                <input type="text" id="custom-site-icon-input" maxlength="4" placeholder="Custom emoji / text"
+                                    class="flex-1 px-3 py-2 rounded-xl border themed-surface text-xs focus:outline-none">
+                                <button type="submit" class="px-3 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Set</button>
+                            </form>
+                        </div>
+
+                        <!-- C. Web Icon Changer (Browser Tab Favicon + Tab Title) -->
+                        <div class="p-4 rounded-2xl border themed-subtle space-y-3.5">
+                            <div class="flex items-center gap-2 font-bold text-sm">
+                                <i data-lucide="globe-2" class="w-4 h-4 text-sky-500"></i>
+                                <span>Web Icon Changer (Favicon)</span>
+                            </div>
+                            <p class="text-xs themed-muted">Updates the live browser tab icon (<code class="font-mono">&lt;link rel="icon"&gt;</code>) and tab title.</p>
+
+                            <div class="grid grid-cols-5 gap-1.5">
+                                <button type="button" onclick="applyWebIcon('💳', '#4f46e5', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer" title="Card Favicon">💳</button>
+                                <button type="button" onclick="applyWebIcon('🔥', '#e11d48', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer" title="Fire Favicon">🔥</button>
+                                <button type="button" onclick="applyWebIcon('🪙', '#d97706', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer" title="Coin Favicon">🪙</button>
+                                <button type="button" onclick="applyWebIcon('🎮', '#0284c7', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer" title="Game Favicon">🎮</button>
+                                <button type="button" onclick="applyWebIcon('🌟', '#059669', true)" class="p-2 rounded-lg border themed-surface hover:scale-105 transition text-base cursor-pointer" title="Star Favicon">🌟</button>
+                            </div>
+
+                            <form onsubmit="handleCustomWebIcon(event)" class="space-y-2.5 pt-1">
+                                <div class="flex gap-2">
+                                    <input type="text" id="custom-web-icon-input" maxlength="4" placeholder="Favicon emoji (e.g. 🎯)"
+                                        class="w-28 px-2.5 py-2 rounded-xl border themed-surface text-xs focus:outline-none">
+                                    <input type="color" id="custom-web-icon-bg" value="#4f46e5" title="Favicon Badge Color"
+                                        class="w-11 h-9 rounded-xl border themed-surface p-0.5 cursor-pointer">
+                                    <button type="submit" class="flex-1 px-3 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Apply Icon</button>
+                                </div>
+                                <div class="flex gap-2">
+                                    <input type="text" id="custom-page-title-input" placeholder="Browser tab title..."
+                                        class="flex-1 px-3 py-2 rounded-xl border themed-surface text-xs focus:outline-none">
+                                    <button type="button" onclick="applyPageTitleFromInput()" class="px-3 py-2 rounded-xl text-xs font-semibold border themed-surface hover:opacity-90 cursor-pointer">Save Title</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. AUDIT LOG -->
+                <section id="adm-sec-logs" class="rounded-2xl border themed-surface p-5 sm:p-6 shadow-sm space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <h2 class="text-base font-bold flex items-center gap-2">
+                                <i data-lucide="scroll-text" class="w-5 h-5 themed-accent-text"></i>
+                                <span>System Audit Log</span>
+                            </h2>
+                            <p class="text-xs themed-muted">Chronological record of credit adjustments, bans, item publishing, announcements & appearance changes.</p>
+                        </div>
+                        <span id="adm-log-count" class="text-xs font-mono px-2.5 py-1 rounded-full themed-subtle border">0 events</span>
+                    </div>
+
+                    <div id="admin-audit-log" class="divide-y divide-slate-200/60 dark:divide-slate-800 max-h-96 overflow-y-auto pr-1">
+                        <!-- Populated dynamically -->
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===================================================================== -->
+    <!-- MODALS & TOAST NOTIFICATION                                           -->
+    <!-- ===================================================================== -->
+
+    <!-- Modal 1: Create User (Admin) -->
+    <div id="create-user-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-md w-full shadow-2xl p-6 space-y-4 fade-in">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i data-lucide="user-plus" class="w-4 h-4 themed-accent-text"></i>
+                    <span>Create New User Account</span>
+                </h3>
+                <button onclick="closeModal('create-user-modal')" class="p-1 rounded-lg themed-muted hover:text-current cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleAdminCreateUser(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Full Name</label>
+                    <input type="text" id="cuser-name" required placeholder="Maya Lin"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Username</label>
+                        <input type="text" id="cuser-username" required placeholder="maya_lin"
+                            class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Starting Credits</label>
+                        <input type="number" id="cuser-credits" min="0" value="150" required
+                            class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Email</label>
+                    <input type="email" id="cuser-email" required placeholder="maya@example.com"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Password</label>
+                    <input type="password" id="cuser-password" required minlength="4" value="user123"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('create-user-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Grant / Deduct Credits -->
+    <div id="credit-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-md w-full shadow-2xl p-6 space-y-4 fade-in">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold flex items-center gap-2">
+                    <i data-lucide="coins" class="w-4 h-4 text-emerald-500"></i>
+                    <span>Adjust User Credits</span>
+                </h3>
+                <button onclick="closeModal('credit-modal')" class="p-1 rounded-lg themed-muted hover:text-current cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <div class="p-3 rounded-xl themed-subtle border text-xs flex items-center justify-between">
+                <div>
+                    <div id="cred-target-name" class="font-bold">User Name</div>
+                    <div id="cred-target-handle" class="themed-muted font-mono">@handle</div>
+                </div>
+                <div class="text-right">
+                    <div class="themed-muted">Current Balance</div>
+                    <div id="cred-target-bal" class="font-mono font-bold text-sm text-emerald-500">0 CR</div>
+                </div>
+            </div>
+            <form onsubmit="handleCreditSubmit(event)" class="space-y-3.5">
+                <input type="hidden" id="cred-target-user-id">
+                <div class="grid grid-cols-2 gap-2">
+                    <label class="cursor-pointer">
+                        <input type="radio" name="cred-mode" value="grant" checked class="sr-only peer">
+                        <div class="py-2 px-3 rounded-xl border text-center text-xs font-bold peer-checked:bg-emerald-500/15 peer-checked:border-emerald-500 peer-checked:text-emerald-500 themed-subtle">
+                            + Grant Credits
+                        </div>
+                    </label>
+                    <label class="cursor-pointer">
+                        <input type="radio" name="cred-mode" value="deduct" class="sr-only peer">
+                        <div class="py-2 px-3 rounded-xl border text-center text-xs font-bold peer-checked:bg-rose-500/15 peer-checked:border-rose-500 peer-checked:text-rose-500 themed-subtle">
+                            - Deduct Credits
+                        </div>
+                    </label>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Amount</label>
+                    <input type="number" id="cred-amount" min="1" max="1000000" required placeholder="100"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm font-mono focus:outline-none">
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Reason / Note</label>
+                    <input type="text" id="cred-note" required placeholder="e.g., Reward for event participation"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('credit-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Apply Credit Change</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 3: Ban User -->
+    <div id="ban-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-md w-full shadow-2xl p-6 space-y-4 fade-in">
+            <div class="flex items-center justify-between">
+                <h3 class="text-base font-bold text-rose-500 flex items-center gap-2">
+                    <i data-lucide="ban" class="w-4 h-4"></i>
+                    <span>Ban User Account</span>
+                </h3>
+                <button onclick="closeModal('ban-modal')" class="p-1 rounded-lg themed-muted hover:text-current cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <p class="text-xs themed-muted">Banned users will be blocked from signing in and will see the ban reason below.</p>
+            <form onsubmit="handleBanSubmit(event)" class="space-y-3.5">
+                <input type="hidden" id="ban-target-user-id">
+                <div class="p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs">
+                    Target Account: <strong id="ban-target-label">-</strong>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Ban Reason</label>
+                    <textarea id="ban-reason-input" rows="3" required placeholder="e.g., Violation of platform credit & card rules"
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none"></textarea>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('ban-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold bg-rose-600 hover:bg-rose-500 text-white cursor-pointer">Confirm Ban</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 4: Add / Edit Category -->
+    <div id="category-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-md w-full shadow-2xl p-6 space-y-4 fade-in">
+            <div class="flex items-center justify-between">
+                <h3 id="category-modal-title" class="text-base font-bold flex items-center gap-2">
+                    <i data-lucide="folder-plus" class="w-4 h-4 themed-accent-text"></i>
+                    <span>Add Category</span>
+                </h3>
+                <button onclick="closeModal('category-modal')" class="p-1 rounded-lg themed-muted hover:text-current cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleCategorySubmit(event)" class="space-y-3.5">
+                <input type="hidden" id="edit-category-id">
+                <div class="grid grid-cols-3 gap-3">
+                    <div class="col-span-2">
+                        <label class="block text-xs font-semibold mb-1">Category Name</label>
+                        <input type="text" id="cat-name" required placeholder="e.g., Virtual Cards"
+                            class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Icon</label>
+                        <input type="text" id="cat-icon" required maxlength="4" value="💳"
+                            class="w-full px-3 py-2 rounded-xl border themed-subtle text-sm text-center focus:outline-none">
+                    </div>
+                </div>
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Color Tag</label>
+                    <select id="cat-color" class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                        <option value="indigo">Indigo</option>
+                        <option value="emerald">Emerald</option>
+                        <option value="amber">Amber</option>
+                        <option value="rose">Rose</option>
+                        <option value="sky">Sky</option>
+                    </select>
+                </div>
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('category-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Save Category</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 5: Add / Edit Item & Publisher Status -->
+    <div id="item-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-lg w-full shadow-2xl p-6 space-y-4 fade-in">
+            <div class="flex items-center justify-between">
+                <h3 id="item-modal-title" class="text-base font-bold flex items-center gap-2">
+                    <i data-lucide="package-plus" class="w-4 h-4 themed-accent-text"></i>
+                    <span>Add Item</span>
+                </h3>
+                <button onclick="closeModal('item-modal')" class="p-1 rounded-lg themed-muted hover:text-current cursor-pointer">
+                    <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+            </div>
+            <form onsubmit="handleItemSubmit(event)" class="space-y-3.5">
+                <input type="hidden" id="edit-item-id">
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div class="sm:col-span-2">
+                        <label class="block text-xs font-semibold mb-1">Item Name</label>
+                        <input type="text" id="item-name" required placeholder="e.g., $25 Virtual Prepaid Card"
+                            class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Icon</label>
+                        <input type="text" id="item-icon" required maxlength="4" value="💳"
+                            class="w-full px-3 py-2 rounded-xl border themed-subtle text-sm text-center focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Category</label>
+                        <select id="item-category" required class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                            <!-- Populated dynamically -->
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Badge</label>
+                        <select id="item-badge" class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none">
+                            <option value="">None</option>
+                            <option value="Popular">Popular</option>
+                            <option value="New">New</option>
+                            <option value="VIP">VIP</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-end">
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Credit Cost</label>
+                        <input type="number" id="item-cost" min="1" max="1000000" required value="50"
+                            class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm font-mono focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold mb-1">Stock Quantity</label>
+                        <div class="flex items-center gap-2">
+                            <input type="number" id="item-stock" min="0" value="20"
+                                class="w-full px-3 py-2 rounded-xl border themed-subtle text-sm font-mono focus:outline-none disabled:opacity-50">
+                            <label class="inline-flex items-center gap-1.5 text-xs whitespace-nowrap cursor-pointer">
+                                <input type="checkbox" id="item-unlimited" onchange="toggleItemStockDisabled()" class="rounded">
+                                <span>Unlimited</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold mb-1">Description</label>
+                    <textarea id="item-desc" rows="2" required placeholder="Describe what this card, pass, or perk gives the member..."
+                        class="w-full px-3.5 py-2 rounded-xl border themed-subtle text-sm focus:outline-none"></textarea>
+                </div>
+
+                <label class="flex items-center gap-2.5 p-3 rounded-xl themed-subtle border cursor-pointer">
+                    <input type="checkbox" id="item-published" checked class="w-4 h-4 rounded">
+                    <div>
+                        <div class="text-xs font-bold">Publish to Website Immediately</div>
+                        <div class="text-[11px] themed-muted">Published items appear live in the User OverView storefront.</div>
+                    </div>
+                </label>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" onclick="closeModal('item-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                    <button type="submit" class="px-4 py-2 rounded-xl text-xs font-semibold themed-btn-primary cursor-pointer">Save Item</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 6: Reset Demo Data Confirmation -->
+    <div id="reset-modal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/60 backdrop-blur-xs p-4">
+        <div class="rounded-2xl border themed-surface max-w-sm w-full shadow-2xl p-6 space-y-4 fade-in">
+            <h3 class="text-base font-bold text-amber-500 flex items-center gap-2">
+                <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+                <span>Reset All Demo Data?</span>
+            </h3>
+            <p class="text-xs themed-muted leading-relaxed">
+                This restores default users, credits, categories, published items, announcements, theme/icon settings, and audit logs in <code class="font-mono">localStorage</code>.
+            </p>
+            <div class="flex justify-end gap-2 pt-2">
+                <button type="button" onclick="closeModal('reset-modal')" class="px-4 py-2 rounded-xl text-xs font-semibold border themed-subtle cursor-pointer">Cancel</button>
+                <button type="button" onclick="confirmResetDemoData()" class="px-4 py-2 rounded-xl text-xs font-semibold bg-amber-600 hover:bg-amber-500 text-white cursor-pointer">Reset Data</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full px-4 sm:px-0 pointer-events-none"></div>
+
+    <script>
+        // =====================================================================
+        // STATE & PERSISTENCE (localStorage)
+        // =====================================================================
+        const STORAGE_KEY = 'cardvault_platform_state_v1';
+
+        const ADMIN_ACCOUNT = {
+            email: 'admin@gmail.com',
+            username: 'admin',
+            password: 'admin',
+            name: 'System Admin'
+        };
+
+        const DEFAULT_STATE = {
+            session: {
+                role: null, // 'admin' | 'user' | null
+                userId: null
+            },
+            appearance: {
+                theme: 'midnight', // 'midnight' | 'daylight' | 'royal' | 'emerald'
+                siteIcon: '💳',
+                webIcon: '💳',
+                webIconBg: '#4f46e5',
+                pageTitle: 'CardVault — Virtual Card & Credit Admin System'
+            },
+            users: [
+                {
+                    id: 'USR-1001',
+                    name: 'Alex Rivera',
+                    username: 'alex_card',
+                    email: 'alex@example.com',
+                    password: 'user123',
+                    credits: 350,
+                    totalCredited: 450,
+                    totalSpent: 100,
+                    banned: false,
+                    banReason: '',
+                    joinedAt: new Date(Date.now() - 86400000 * 7).toISOString(),
+                    transactions: [
+                        { id: 'tx-101', type: 'grant', note: 'Welcome bonus credits', amount: 100, timestamp: new Date(Date.now() - 86400000 * 7).toISOString() },
+                        { id: 'tx-102', type: 'grant', note: 'Admin credit reward', amount: 350, timestamp: new Date(Date.now() - 86400000 * 3).toISOString() },
+                        { id: 'tx-103', type: 'claim', note: 'Claimed: Gamer Pass 500', amount: 100, timestamp: new Date(Date.now() - 86400000 * 1).toISOString() }
+                    ]
+                },
+                {
+                    id: 'USR-1002',
+                    name: 'Samira Patel',
+                    username: 'samira_p',
+                    email: 'samira@example.com',
+                    password: 'user123',
+                    credits: 220,
+                    totalCredited: 220,
+                    totalSpent: 0,
+                    banned: false,
+                    banReason: '',
+                    joinedAt: new Date(Date.now() - 86400000 * 4).toISOString(),
+                    transactions: [
+                        { id: 'tx-201', type: 'grant', note: 'Welcome bonus credits', amount: 100, timestamp: new Date(Date.now() - 86400000 * 4).toISOString() },
+                        { id: 'tx-202', type: 'grant', note: 'Event bonus grant', amount: 120, timestamp: new Date(Date.now() - 86400000 * 2).toISOString() }
+                    ]
+                },
+                {
+                    id: 'USR-1003',
+                    name: 'Devon Brooks',
+                    username: 'devon_b',
+                    email: 'devon@example.com',
+                    password: 'user123',
+                    credits: 75,
+                    totalCredited: 100,
+                    totalSpent: 25,
+                    banned: true,
+                    banReason: 'Multiple automated claim attempts detected by Admin.',
+                    joinedAt: new Date(Date.now() - 86400000 * 6).toISOString(),
+                    transactions: [
+                        { id: 'tx-301', type: 'grant', note: 'Welcome bonus credits', amount: 100, timestamp: new Date(Date.now() - 86400000 * 6).toISOString() },
+                        { id: 'tx-302', type: 'deduct', note: 'Admin balance adjustment', amount: 25, timestamp: new Date(Date.now() - 86400000 * 5).toISOString() }
+                    ]
+                }
+            ],
+            categories: [
+                { id: 'cat-cards', name: 'Virtual Cards', icon: '💳', color: 'indigo' },
+                { id: 'cat-passes', name: 'Gaming Passes', icon: '🎮', color: 'emerald' },
+                { id: 'cat-perks', name: 'VIP Perks', icon: '👑', color: 'amber' }
+            ],
+            items: [
+                {
+                    id: 'itm-1',
+                    name: '$10 Virtual Card Voucher',
+                    categoryId: 'cat-cards',
+                    icon: '💳',
+                    cost: 120,
+                    stock: 25,
+                    unlimited: false,
+                    badge: 'Popular',
+                    description: 'Instant virtual credit voucher code redeemable inside your member wallet.',
+                    published: true
+                },
+                {
+                    id: 'itm-2',
+                    name: 'Pro Gamer Pass (30 Days)',
+                    categoryId: 'cat-passes',
+                    icon: '🎮',
+                    cost: 100,
+                    stock: 0,
+                    unlimited: true,
+                    badge: 'New',
+                    description: 'Unlocks priority access queues and member pass perks for 30 days.',
+                    published: true
+                },
+                {
+                    id: 'itm-3',
+                    name: 'VIP Gold Card Skin & Badge',
+                    categoryId: 'cat-perks',
+                    icon: '👑',
+                    cost: 250,
+                    stock: 10,
+                    unlimited: false,
+                    badge: 'VIP',
+                    description: 'Exclusive gold card badge and early access to limited credit drops.',
+                    published: false
+                }
+            ],
+            announcements: [
+                {
+                    id: 'ann-1',
+                    title: 'New Virtual Cards & Passes Published!',
+                    message: 'Check the Published Storefront Items section in your OverView to claim cards and passes using your credits.',
+                    priority: 'info',
+                    active: true,
+                    createdAt: new Date(Date.now() - 3600000 * 6).toISOString()
+                },
+                {
+                    id: 'ann-2',
+                    title: 'Account Security & Fair Play Notice',
+                    message: 'Accounts violating platform rules may be banned immediately by the administrator.',
+                    priority: 'warning',
+                    active: true,
+                    createdAt: new Date(Date.now() - 3600000 * 24).toISOString()
+                }
+            ],
+            logs: [
+                {
+                    id: 'log-1',
+                    type: 'item',
+                    text: 'Published item "$10 Virtual Card Voucher" to the website storefront.',
+                    timestamp: new Date(Date.now() - 3600000 * 5).toISOString()
+                },
+                {
+                    id: 'log-2',
+                    type: 'ban',
+                    text: 'Banned user Devon Brooks (@devon_b) — Reason: Multiple automated claim attempts detected by Admin.',
+                    timestamp: new Date(Date.now() - 3600000 * 12).toISOString()
+                },
+                {
+                    id: 'log-3',
+                    type: 'credit',
+                    text: 'Granted +350 credits to Alex Rivera (@alex_card) — Admin credit reward.',
+                    timestamp: new Date(Date.now() - 86400000 * 3).toISOString()
+                }
+            ]
+        };
+
+        let state = loadState();
+        let activeUserCategory = 'overview';
+        let selectedUserStoreCategory = 'all';
+
+        function loadState() {
+            try {
+                const raw = localStorage.getItem(STORAGE_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    return {
+                        ...JSON.parse(JSON.stringify(DEFAULT_STATE)),
+                        ...parsed,
+                        appearance: {
+                            ...DEFAULT_STATE.appearance,
+                            ...(parsed.appearance || {})
+                        },
+                        session: {
+                            ...DEFAULT_STATE.session,
+                            ...(parsed.session || {})
+                        }
+                    };
+                }
+            } catch (err) {
+                console.error('Failed to load state:', err);
+            }
+            return JSON.parse(JSON.stringify(DEFAULT_STATE));
+        }
+
+        function saveState() {
+            try {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+            } catch (err) {
+                console.error('Failed to save state:', err);
+                showToast('Storage save warning: check browser storage limits.', 'warning');
+            }
+        }
+
+        function addAuditLog(type, text) {
+            state.logs.unshift({
+                id: 'log-' + Date.now() + '-' + Math.random().toString(36).slice(2, 6),
+                type,
+                text,
+                timestamp: new Date().toISOString()
+            });
+            if (state.logs.length > 80) state.logs.length = 80;
+        }
+
+        // =====================================================================
+        // HELPERS & FORMATTING
+        // =====================================================================
+        function escapeHTML(str) {
+            return String(str ?? '')
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;');
+        }
+
+        function formatDateTime(iso) {
+            try {
+                return new Date(iso).toLocaleString(undefined, {
+                    month: 'short',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+            } catch {
+                return iso;
+            }
+        }
+
+        function showToast(message, type = 'info') {
+            const container = document.getElementById('toast-container');
+            const palette = {
+                success: 'bg-emerald-600 text-white border-emerald-500',
+                error: 'bg-rose-600 text-white border-rose-500',
+                warning: 'bg-amber-600 text-white border-amber-500',
+                info: 'bg-slate-900 text-white border-slate-700'
+            };
+            const toast = document.createElement('div');
+            toast.className = `pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border shadow-xl text-xs sm:text-sm font-medium fade-in ${palette[type] || palette.info}`;
+            toast.innerHTML = `
+                <span>${escapeHTML(message)}</span>
+                <button type="button" onclick="this.parentElement.remove()" class="opacity-80 hover:opacity-100 cursor-pointer">✕</button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast.parentElement) toast.remove();
+            }, 3400);
+        }
+
+        function openModal(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.remove('hidden');
+            el.classList.add('flex');
+            lucide.createIcons();
+        }
+
+        function closeModal(id) {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.classList.add('hidden');
+            el.classList.remove('flex');
+        }
+
+        // =====================================================================
+        // APPEARANCE: THEME CHANGER, SITE ICON CHANGER & WEB ICON CHANGER
+        // =====================================================================
+        function applyAllAppearance() {
+            applyTheme(state.appearance.theme, false);
+            applySiteIcon(state.appearance.siteIcon, false);
+            applyWebIcon(state.appearance.webIcon, state.appearance.webIconBg, false);
+            applyPageTitle(state.appearance.pageTitle, false);
+        }
+
+        function applyTheme(themeName, logChange = false) {
+            const validThemes = ['midnight', 'daylight', 'royal', 'emerald'];
+            const chosen = validThemes.includes(themeName) ? themeName : 'midnight';
+            state.appearance.theme = chosen;
+            document.documentElement.setAttribute('data-theme', chosen);
+
+            // Update active highlight on theme selector buttons
+            document.querySelectorAll('.theme-choice-btn').forEach(btn => {
+                const isSelected = btn.dataset.themeBtn === chosen;
+                btn.classList.toggle('ring-2', isSelected);
+                btn.classList.toggle('ring-indigo-500', isSelected);
+                btn.classList.toggle('themed-surface', isSelected);
+            });
+
+            if (logChange) {
+                addAuditLog('appearance', `Changed website theme to "${chosen}".`);
+                saveState();
+                renderAdminLogs();
+                showToast(`Theme switched to ${chosen}.`, 'success');
+            }
+        }
+
+        function applySiteIcon(iconText, logChange = false) {
+            const clean = (iconText || '💳').trim();
+            state.appearance.siteIcon = clean;
+
+            document.querySelectorAll('.site-icon-badge').forEach(badge => {
+                badge.textContent = clean;
+            });
+
+            const label = document.getElementById('current-site-icon-label');
+            if (label) label.textContent = clean;
+
+            if (logChange) {
+                addAuditLog('appearance', `Updated Site Icon to "${clean}".`);
+                saveState();
+                renderAdminLogs();
+                showToast(`Site icon updated to ${clean}`, 'success');
+            }
+        }
+
+        function handleCustomSiteIcon(e) {
+            e.preventDefault();
+            const val = document.getElementById('custom-site-icon-input').value.trim();
+            if (!val) return;
+            applySiteIcon(val, true);
+            document.getElementById('custom-site-icon-input').value = '';
+        }
+
+        function applyWebIcon(emojiOrText, bgColor = '#4f46e5', logChange = false) {
+            const cleanIcon = (emojiOrText || '💳').trim();
+            const cleanBg = bgColor || '#4f46e5';
+            state.appearance.webIcon = cleanIcon;
+            state.appearance.webIconBg = cleanBg;
+
+            const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><rect width="64" height="64" rx="16" fill="${encodeURIComponent(cleanBg)}"/><text x="50%" y="54%" dominant-baseline="middle" text-anchor="middle" font-size="34">${cleanIcon}</text></svg>`;
+            const faviconLink = document.getElementById('dynamic-favicon');
+            if (faviconLink) {
+                faviconLink.href = `data:image/svg+xml,${svg}`;
+            }
+
+            const emojiInput = document.getElementById('custom-web-icon-input');
+            const colorInput = document.getElementById('custom-web-icon-bg');
+            if (emojiInput && !emojiInput.value) emojiInput.value = cleanIcon;
+            if (colorInput) colorInput.value = cleanBg;
+
+            if (logChange) {
+                addAuditLog('appearance', `Updated Web Icon (favicon) to "${cleanIcon}" (${cleanBg}).`);
+                saveState();
+                renderAdminLogs();
+                showToast(`Browser tab icon updated to ${cleanIcon}`, 'success');
+            }
+        }
+
+        function handleCustomWebIcon(e) {
+            e.preventDefault();
+            const iconVal = document.getElementById('custom-web-icon-input').value.trim() || state.appearance.webIcon;
+            const bgVal = document.getElementById('custom-web-icon-bg').value || '#4f46e5';
+            applyWebIcon(iconVal, bgVal, true);
+        }
+
+        function applyPageTitle(titleText, logChange = false) {
+            const cleanTitle = (titleText || 'CardVault — Virtual Card & Credit Admin System').trim();
+            state.appearance.pageTitle = cleanTitle;
+            document.title = cleanTitle;
+            const titleEl = document.getElementById('dynamic-page-title');
+            if (titleEl) titleEl.textContent = cleanTitle;
+
+            const titleInput = document.getElementById('custom-page-title-input');
+            if (titleInput && document.activeElement !== titleInput) {
+                titleInput.value = cleanTitle;
+            }
+
+            if (logChange) {
+                addAuditLog('appearance', `Updated browser tab title to "${cleanTitle}".`);
+                saveState();
+                renderAdminLogs();
+                showToast('Browser page title updated.', 'success');
+            }
+        }
+
+        function applyPageTitleFromInput() {
+            const val = document.getElementById('custom-page-title-input').value.trim();
+            if (!val) return;
+            applyPageTitle(val, true);
+        }
+
+        // =====================================================================
+        // AUTHENTICATION & REGISTRATION
+        // =====================================================================
+        function switchAuthTab(tab) {
+            const tabs = ['user-login', 'user-register', 'admin-login'];
+            tabs.forEach(t => {
+                const btn = document.getElementById(`tab-${t}`);
+                const form = document.getElementById(`${t}-form`);
+                const active = t === tab;
+                form.classList.toggle('hidden', !active);
+                btn.classList.toggle('themed-btn-primary', active);
+                btn.classList.toggle('shadow-sm', active);
+                btn.classList.toggle('themed-muted', !active);
+            });
+            hideAuthAlert();
+            lucide.createIcons();
+        }
+
+        function showAuthAlert(htmlMessage, variant = 'error') {
+            const box = document.getElementById('auth-alert');
+            const styles = {
+                error: 'bg-rose-500/15 border-rose-500/30 text-rose-500',
+                ban: 'bg-rose-600/15 border-rose-500/40 text-rose-500',
+                success: 'bg-emerald-500/15 border-emerald-500/30 text-emerald-500'
+            };
+            box.className = `mb-5 p-4 rounded-2xl border text-xs sm:text-sm fade-in ${styles[variant] || styles.error}`;
+            box.innerHTML = htmlMessage;
+            box.classList.remove('hidden');
+        }
+
+        function hideAuthAlert() {
+            const box = document.getElementById('auth-alert');
+            box.classList.add('hidden');
+            box.innerHTML = '';
+        }
+
+        function autoFillAdmin() {
+            switchAuthTab('admin-login');
+            document.getElementById('alog-identifier').value = ADMIN_ACCOUNT.email;
+            document.getElementById('alog-password').value = ADMIN_ACCOUNT.password;
+            showToast('Admin credentials filled (admin@gmail.com / admin).', 'info');
+        }
+
+        function quickFillDemoUser() {
+            switchAuthTab('user-login');
+            document.getElementById('ulog-identifier').value = 'alex@example.com';
+            document.getElementById('ulog-password').value = 'user123';
+        }
+
+        function handleAdminLogin(e) {
+            e.preventDefault();
+            const idInput = document.getElementById('alog-identifier').value.trim().toLowerCase();
+            const passInput = document.getElementById('alog-password').value;
+
+            const validId = idInput === ADMIN_ACCOUNT.email.toLowerCase() || idInput === ADMIN_ACCOUNT.username.toLowerCase();
+            const validPass = passInput === ADMIN_ACCOUNT.password;
+
+            if (!validId || !validPass) {
+                showAuthAlert('<strong>Invalid Admin Credentials.</strong> Use <code>admin@gmail.com</code> (or username <code>admin</code>) with password <code>admin</code>.', 'error');
+                return;
+            }
+
+            state.session = { role: 'admin', userId: null };
+            addAuditLog('system', 'Administrator signed into System Admin Panel.');
+            saveState();
+            renderActiveView();
+            showToast('Welcome back, System Admin!', 'success');
+        }
+
+        function handleUserLogin(e) {
+            e.preventDefault();
+            const identifier = document.getElementById('ulog-identifier').value.trim().toLowerCase();
+            const password = document.getElementById('ulog-password').value;
+
+            const user = state.users.find(u =>
+                u.email.toLowerCase() === identifier || u.username.toLowerCase() === identifier
+            );
+
+            if (!user || user.password !== password) {
+                showAuthAlert('<strong>Login Failed:</strong> Invalid email/username or password.', 'error');
+                return;
+            }
+
+            // Ban Enforcement
+            if (user.banned) {
+                const reasonText = user.banReason ? escapeHTML(user.banReason) : 'No specific reason provided by the administrator.';
+                showAuthAlert(
+                    `<div class="flex items-start gap-2.5">
+                        <i data-lucide="shield-x" class="w-5 h-5 shrink-0 mt-0.5"></i>
+                        <div>
+                            <div class="font-bold">Account Banned — Access Denied</div>
+                            <p class="mt-1">Your account (<strong>@${escapeHTML(user.username)}</strong>) has been suspended by an administrator.</p>
+                            <p class="mt-1.5 text-xs opacity-90"><strong>Ban Reason:</strong> ${reasonText}</p>
+                        </div>
+                    </div>`,
+                    'ban'
+                );
+                lucide.createIcons();
+                return;
+            }
+
+            state.session = { role: 'user', userId: user.id };
+            saveState();
+            renderActiveView();
+            showToast(`Signed in as ${user.name}!`, 'success');
+        }
+
+        function handleUserRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('ureg-name').value.trim();
+            const username = document.getElementById('ureg-username').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+            const email = document.getElementById('ureg-email').value.trim().toLowerCase();
+            const password = document.getElementById('ureg-password').value;
+
+            if (!name || !username || !email || !password) {
+                showAuthAlert('Please fill out all registration fields.', 'error');
+                return;
+            }
+
+            if (email === ADMIN_ACCOUNT.email || username === ADMIN_ACCOUNT.username) {
+                showAuthAlert('That email or username is reserved for the administrator.', 'error');
+                return;
+            }
+
+            const exists = state.users.some(u => u.email.toLowerCase() === email || u.username.toLowerCase() === username);
+            if (exists) {
+                showAuthAlert('An account with that email or username already exists.', 'error');
+                return;
+            }
+
+            const startingCredits = 100;
+            const newUser = {
+                id: 'USR-' + Math.floor(1000 + Math.random() * 9000),
+                name,
+                username,
+                email,
+                password,
+                credits: startingCredits,
+                totalCredited: startingCredits,
+                totalSpent: 0,
+                banned: false,
+                banReason: '',
+                joinedAt: new Date().toISOString(),
+                transactions: [
+                    {
+                        id: 'tx-' + Date.now(),
+                        type: 'grant',
+                        note: 'Welcome bonus credits upon registration',
+                        amount: startingCredits,
+                        timestamp: new Date().toISOString()
+                    }
+                ]
+            };
+
+            state.users.unshift(newUser);
+            state.session = { role: 'user', userId: newUser.id };
+            addAuditLog('user', `New user registered: ${name} (@${username}) — granted ${startingCredits} welcome credits.`);
+            saveState();
+
+            document.getElementById('user-register-form').reset();
+            renderActiveView();
+            showToast(`Account created! You received ${startingCredits} welcome credits.`, 'success');
+        }
+
+        function logoutToAuth() {
+            state.session = { role: null, userId: null };
+            saveState();
+            renderActiveView();
+            switchAuthTab('user-login');
+            showToast('Signed out.', 'info');
+        }
+
+        // =====================================================================
+        // VIEW ROUTER
+        // =====================================================================
+        function renderActiveView() {
+            applyAllAppearance();
+
+            const authView = document.getElementById('auth-view');
+            const userView = document.getElementById('user-view');
+            const adminView = document.getElementById('admin-view');
+
+            authView.classList.add('hidden');
+            userView.classList.add('hidden');
+            adminView.classList.add('hidden');
+
+            if (state.session.role === 'admin') {
+                adminView.classList.remove('hidden');
+                renderAdminAll();
+            } else if (state.session.role === 'user') {
+                const currentUser = state.users.find(u => u.id === state.session.userId);
+                if (!currentUser || currentUser.banned) {
+                    state.session = { role: null, userId: null };
+                    saveState();
+                    authView.classList.remove('hidden');
+                    if (currentUser?.banned) {
+                        showAuthAlert(`<strong>Session Ended:</strong> Your account was banned. Reason: ${escapeHTML(currentUser.banReason || 'Suspended by admin')}`, 'ban');
+                    }
+                } else {
+                    userView.classList.remove('hidden');
+                    renderUserPortal(currentUser);
+                }
+            } else {
+                authView.classList.remove('hidden');
+            }
+
+            lucide.createIcons();
+        }
+
+        // =====================================================================
+        // USER PORTAL (OverView & Dashboard + Published Items Redemption)
+        // =====================================================================
+        function toggleUserSidebar(show) {
+            const sidebar = document.getElementById('user-sidebar');
+            const backdrop = document.getElementById('user-sidebar-backdrop');
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function switchUserCategory(cat) {
+            activeUserCategory = cat;
+            const isOverview = cat === 'overview';
+
+            document.getElementById('user-cat-overview').classList.toggle('hidden', !isOverview);
+            document.getElementById('user-cat-dashboard').classList.toggle('hidden', isOverview);
+
+            const navOv = document.getElementById('u-nav-overview');
+            const navDash = document.getElementById('u-nav-dashboard');
+
+            navOv.className = `w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
+                isOverview ? 'themed-btn-primary shadow' : 'text-slate-300 hover:bg-white/10'
+            }`;
+            navDash.className = `w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold transition cursor-pointer ${
+                !isOverview ? 'themed-btn-primary shadow' : 'text-slate-300 hover:bg-white/10'
+            }`;
+
+            document.getElementById('user-header-title').textContent = isOverview ? 'OverView' : 'Dashboard';
+            document.getElementById('user-header-sub').textContent = isOverview
+                ? 'Your virtual cards, active announcements & published store items'
+                : 'Credit wallet summary, profile details & transaction history';
+
+            if (window.innerWidth < 1024) toggleUserSidebar(false);
+            lucide.createIcons();
+        }
+
+        function renderUserPortal(user) {
+            const last4 = String(user.id.replace(/\D/g, '')).padStart(4, '0').slice(-4);
+            const claimsCount = (user.transactions || []).filter(t => t.type === 'claim').length;
+            const publishedItems = state.items.filter(i => i.published);
+
+            // Sidebar & Header
+            document.getElementById('u-side-name').textContent = user.name;
+            document.getElementById('u-side-id').textContent = user.id;
+            document.getElementById('u-side-handle').textContent = '@' + user.username;
+            document.getElementById('u-side-credits').textContent = `${Number(user.credits).toLocaleString()} CR`;
+            document.getElementById('u-top-credits').textContent = `${Number(user.credits).toLocaleString()} Credits`;
+
+            // OverView Cards
+            document.getElementById('u-ov-welcome').textContent = `Hello, ${user.name}!`;
+            document.getElementById('u-ov-id').textContent = user.id;
+            document.getElementById('u-ov-username').textContent = '@' + user.username;
+            document.getElementById('u-ov-balance').textContent = Number(user.credits).toLocaleString();
+            document.getElementById('u-ov-pub-count').textContent = publishedItems.length;
+            document.getElementById('u-ov-claimed-count').textContent = claimsCount;
+
+            // Virtual Card
+            document.getElementById('u-card-holder').textContent = user.name.toUpperCase();
+            document.getElementById('u-card-last4').textContent = last4;
+            document.getElementById('u-card-credits').textContent = `${Number(user.credits).toLocaleString()} CR`;
+
+            // Banner & Announcements
+            renderUserAnnouncements();
+
+            // Category Filters & Published Items
+            renderUserCategoryFilters();
+            renderUserPublishedItems(user);
+
+            // User Dashboard Tab
+            document.getElementById('u-dash-balance').textContent = Number(user.credits).toLocaleString();
+            document.getElementById('u-dash-credited').textContent = `+${Number(user.totalCredited || 0).toLocaleString()}`;
+            document.getElementById('u-dash-spent').textContent = `-${Number(user.totalSpent || 0).toLocaleString()}`;
+
+            document.getElementById('u-prof-name').textContent = user.name;
+            document.getElementById('u-prof-user').textContent = '@' + user.username;
+            document.getElementById('u-prof-email').textContent = user.email;
+            document.getElementById('u-prof-id').textContent = user.id;
+            document.getElementById('u-prof-joined').textContent = formatDateTime(user.joinedAt);
+
+            renderUserTransactions(user);
+            switchUserCategory(activeUserCategory);
+        }
+
+        function renderUserAnnouncements() {
+            const activeAnns = state.announcements.filter(a => a.active);
+            const bannerWrap = document.getElementById('user-live-banner');
+            const listEl = document.getElementById('user-announcements-list');
+            const countEl = document.getElementById('u-ann-count');
+
+            countEl.textContent = `${activeAnns.length} Active`;
+
+            const priorityBadge = {
+                info: 'bg-sky-500/15 text-sky-500 border-sky-500/30',
+                warning: 'bg-amber-500/15 text-amber-500 border-amber-500/30',
+                urgent: 'bg-rose-500/15 text-rose-500 border-rose-500/30'
+            };
+
+            if (activeAnns.length > 0) {
+                const top = activeAnns[0];
+                bannerWrap.classList.remove('hidden');
+                bannerWrap.innerHTML = `
+                    <div class="rounded-2xl border p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 ${priorityBadge[top.priority] || priorityBadge.info}">
+                        <div class="flex items-start gap-3">
+                            <i data-lucide="megaphone" class="w-5 h-5 shrink-0 mt-0.5"></i>
+                            <div class="text-xs sm:text-sm">
+                                <span class="font-bold uppercase text-[10px] tracking-wider mr-1.5">[${escapeHTML(top.priority)}]</span>
+                                <strong>${escapeHTML(top.title)}:</strong> ${escapeHTML(top.message)}
+                            </div>
+                        </div>
+                        <span class="text-[11px] opacity-80 shrink-0">${formatDateTime(top.createdAt)}</span>
+                    </div>
+                `;
+            } else {
+                bannerWrap.classList.add('hidden');
+                bannerWrap.innerHTML = '';
+            }
+
+            if (activeAnns.length === 0) {
+                listEl.innerHTML = `<div class="text-xs themed-muted py-4 text-center">No active announcements right now.</div>`;
+                return;
+            }
+
+            listEl.innerHTML = activeAnns.map(a => `
+                <div class="p-4 rounded-xl border themed-subtle flex flex-col sm:flex-row sm:items-start justify-between gap-2">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${priorityBadge[a.priority] || priorityBadge.info}">
+                                ${escapeHTML(a.priority)}
+                            </span>
+                            <h4 class="font-bold text-sm">${escapeHTML(a.title)}</h4>
+                        </div>
+                        <p class="text-xs themed-muted leading-relaxed">${escapeHTML(a.message)}</p>
+                    </div>
+                    <span class="text-[11px] themed-muted shrink-0">${formatDateTime(a.createdAt)}</span>
+                </div>
+            `).join('');
+        }
+
+        function renderUserCategoryFilters() {
+            const container = document.getElementById('user-category-filters');
+            const buttons = [
+                `<button type="button" onclick="selectUserCategory('all')" class="px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer whitespace-nowrap ${
+                    selectedUserStoreCategory === 'all' ? 'themed-btn-primary border-transparent' : 'themed-surface themed-muted'
+                }">All Published</button>`,
+                ...state.categories.map(cat => `
+                    <button type="button" onclick="selectUserCategory('${cat.id}')" class="px-3 py-1.5 rounded-full text-xs font-semibold border transition cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                        selectedUserStoreCategory === cat.id ? 'themed-btn-primary border-transparent' : 'themed-surface'
+                    }">
+                        <span>${escapeHTML(cat.icon)}</span>
+                        <span>${escapeHTML(cat.name)}</span>
+                    </button>
+                `)
+            ];
+            container.innerHTML = buttons.join('');
+        }
+
+        function selectUserCategory(catId) {
+            selectedUserStoreCategory = catId;
+            const user = state.users.find(u => u.id === state.session.userId);
+            renderUserCategoryFilters();
+            if (user) renderUserPublishedItems(user);
+        }
+
+        function renderUserPublishedItems(user) {
+            const grid = document.getElementById('user-published-items-grid');
+            let published = state.items.filter(i => i.published);
+
+            if (selectedUserStoreCategory !== 'all') {
+                published = published.filter(i => i.categoryId === selectedUserStoreCategory);
+            }
+
+            if (published.length === 0) {
+                grid.innerHTML = `
+                    <div class="col-span-full rounded-2xl border themed-surface p-8 text-center space-y-1">
+                        <div class="text-sm font-bold">No Published Items in This View</div>
+                        <p class="text-xs themed-muted">When the Admin publishes items to the website, they will appear here automatically.</p>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = published.map(item => {
+                const cat = state.categories.find(c => c.id === item.categoryId);
+                const outOfStock = !item.unlimited && Number(item.stock) <= 0;
+                const canAfford = Number(user.credits) >= Number(item.cost);
+                const disabled = outOfStock || !canAfford;
+
+                let btnLabel = `Claim (${Number(item.cost).toLocaleString()} CR)`;
+                if (outOfStock) btnLabel = 'Out of Stock';
+                else if (!canAfford) btnLabel = 'Insufficient Credits';
+
+                return `
+                    <div class="rounded-2xl border themed-surface p-5 flex flex-col justify-between gap-4 shadow-sm hover:shadow-md transition">
+                        <div class="space-y-3">
+                            <div class="flex items-start justify-between gap-2">
+                                <div class="w-11 h-11 rounded-2xl themed-subtle border flex items-center justify-center text-2xl">
+                                    ${escapeHTML(item.icon)}
+                                </div>
+                                <div class="flex items-center gap-1.5">
+                                    ${item.badge ? `<span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full themed-accent-soft themed-accent-text">${escapeHTML(item.badge)}</span>` : ''}
+                                    <span class="text-[10px] font-semibold px-2 py-0.5 rounded-full themed-subtle border">
+                                        ${cat ? `${escapeHTML(cat.icon)} ${escapeHTML(cat.name)}` : 'General'}
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h4 class="font-bold text-sm sm:text-base">${escapeHTML(item.name)}</h4>
+                                <p class="text-xs themed-muted mt-1 leading-relaxed">${escapeHTML(item.description)}</p>
+                            </div>
+                        </div>
+
+                        <div class="pt-3 border-t border-inherit flex items-center justify-between gap-3">
+                            <div class="text-xs">
+                                <div class="font-mono font-extrabold text-sm themed-accent-text">${Number(item.cost).toLocaleString()} Credits</div>
+                                <div class="text-[11px] themed-muted">${item.unlimited ? 'Unlimited stock' : `${item.stock} left`}</div>
+                            </div>
+                            <button type="button" ${disabled ? 'disabled' : `onclick="claimPublishedItem('${item.id}')"`}
+                                class="px-3.5 py-2 rounded-xl text-xs font-semibold transition ${
+                                    disabled
+                                        ? 'opacity-50 cursor-not-allowed border themed-subtle themed-muted'
+                                        : 'themed-btn-primary shadow-xs cursor-pointer'
+                                }">
+                                ${btnLabel}
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function claimPublishedItem(itemId) {
+            const user = state.users.find(u => u.id === state.session.userId);
+            const item = state.items.find(i => i.id === itemId);
+
+            if (!user || !item || !item.published) {
+                showToast('Item is no longer available.', 'error');
+                return;
+            }
+            if (user.banned) {
+                showToast('Your account is banned.', 'error');
+                return;
+            }
+            if (!item.unlimited && Number(item.stock) <= 0) {
+                showToast('This item is out of stock.', 'warning');
+                return;
+            }
+            if (Number(user.credits) < Number(item.cost)) {
+                showToast('Not enough credits to claim this item.', 'warning');
+                return;
+            }
+
+            user.credits = Number(user.credits) - Number(item.cost);
+            user.totalSpent = Number(user.totalSpent || 0) + Number(item.cost);
+            if (!item.unlimited) {
+                item.stock = Math.max(0, Number(item.stock) - 1);
+            }
+
+            user.transactions = user.transactions || [];
+            user.transactions.unshift({
+                id: 'tx-' + Date.now(),
+                type: 'claim',
+                note: `Claimed item: ${item.name}`,
+                amount: Number(item.cost),
+                timestamp: new Date().toISOString()
+            });
+
+            addAuditLog('claim', `User ${user.name} (@${user.username}) claimed "${item.name}" for ${item.cost} credits.`);
+            saveState();
+            renderUserPortal(user);
+            showToast(`Claimed "${item.name}"! -${item.cost} credits.`, 'success');
+        }
+
+        function renderUserTransactions(user) {
+            const tbody = document.getElementById('u-dash-tx-body');
+            const countEl = document.getElementById('u-tx-count');
+            const txs = user.transactions || [];
+            countEl.textContent = `${txs.length} ${txs.length === 1 ? 'entry' : 'entries'}`;
+
+            if (txs.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="4" class="py-8 text-center text-xs themed-muted">No transactions recorded yet.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = txs.map(tx => {
+                const isPositive = tx.type === 'grant';
+                const badgeMap = {
+                    grant: '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-500">Credited</span>',
+                    deduct: '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-rose-500/15 text-rose-500">Deducted</span>',
+                    claim: '<span class="px-2 py-0.5 rounded-full text-[11px] font-semibold bg-indigo-500/15 text-indigo-500">Item Claim</span>'
+                };
+                return `
+                    <tr>
+                        <td class="py-3 px-4">${badgeMap[tx.type] || badgeMap.claim}</td>
+                        <td class="py-3 px-4 font-medium">${escapeHTML(tx.note)}</td>
+                        <td class="py-3 px-4 font-mono font-bold ${isPositive ? 'text-emerald-500' : 'text-rose-500'}">
+                            ${isPositive ? '+' : '-'}${Number(tx.amount).toLocaleString()}
+                        </td>
+                        <td class="py-3 px-4 text-right text-xs themed-muted">${formatDateTime(tx.timestamp)}</td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // =====================================================================
+        // ADMIN PANEL RENDERING & ACTIONS
+        // =====================================================================
+        function toggleAdminSidebar(show) {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('admin-sidebar-backdrop');
+            if (show) {
+                sidebar.classList.remove('-translate-x-full');
+                backdrop.classList.remove('hidden');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                backdrop.classList.add('hidden');
+            }
+        }
+
+        function scrollAdminSection(id) {
+            const el = document.getElementById(id);
+            if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            if (window.innerWidth < 1024) toggleAdminSidebar(false);
+        }
+
+        function renderAdminAll() {
+            renderAdminKPIs();
+            renderAdminLiveBanner();
+            renderAdminUsers();
+            renderAdminCatalog();
+            renderAdminAnnouncements();
+            renderAdminLogs();
+            applyAllAppearance();
+            lucide.createIcons();
+        }
+
+        function renderAdminKPIs() {
+            const totalUsers = state.users.length;
+            const totalCredits = state.users.reduce((sum, u) => sum + Number(u.credits || 0), 0);
+            const publishedCount = state.items.filter(i => i.published).length;
+            const bannedCount = state.users.filter(u => u.banned).length;
+
+            document.getElementById('kpi-total-users').textContent = totalUsers.toLocaleString();
+            document.getElementById('kpi-total-credits').textContent = totalCredits.toLocaleString();
+            document.getElementById('kpi-published-items').textContent = publishedCount.toLocaleString();
+            document.getElementById('kpi-banned-users').textContent = bannedCount.toLocaleString();
+        }
+
+        function renderAdminLiveBanner() {
+            const el = document.getElementById('admin-live-banner');
+            const active = state.announcements.find(a => a.active);
+            if (!active) {
+                el.innerHTML = `<div class="rounded-2xl border themed-surface p-3.5 text-xs themed-muted flex items-center gap-2">
+                    <i data-lucide="info" class="w-4 h-4"></i>
+                    <span>No active announcement banner is currently displayed to users.</span>
+                </div>`;
+                return;
+            }
+            el.innerHTML = `
+                <div class="rounded-2xl border themed-surface p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-2 shadow-xs">
+                    <div class="flex items-center gap-2.5 text-xs sm:text-sm">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase themed-accent-soft themed-accent-text">Live Banner</span>
+                        <span class="font-bold">${escapeHTML(active.title)}</span>
+                        <span class="themed-muted hidden md:inline">— ${escapeHTML(active.message)}</span>
+                    </div>
+                    <span class="text-[11px] themed-muted shrink-0">${formatDateTime(active.createdAt)}</span>
+                </div>
+            `;
+        }
+
+        // --- Admin Users, Credits & Bans ---
+        function renderAdminUsers() {
+            const query = (document.getElementById('user-search-input')?.value || '').trim().toLowerCase();
+            const statusFilter = document.getElementById('user-status-filter')?.value || 'all';
+            const tbody = document.getElementById('admin-users-tbody');
+
+            const filtered = state.users.filter(u => {
+                if (statusFilter === 'active' && u.banned) return false;
+                if (statusFilter === 'banned' && !u.banned) return false;
+                if (!query) return true;
+                return (
+                    u.name.toLowerCase().includes(query) ||
+                    u.username.toLowerCase().includes(query) ||
+                    u.email.toLowerCase().includes(query) ||
+                    u.id.toLowerCase().includes(query)
+                );
+            });
+
+            if (filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-xs themed-muted">No matching users found.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = filtered.map(u => {
+                const statusBadge = u.banned
+                    ? `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-rose-500/15 text-rose-500">Banned</span>
+                       <div class="text-[11px] text-rose-400 mt-1 max-w-xs truncate" title="${escapeHTML(u.banReason)}">Reason: ${escapeHTML(u.banReason || 'Suspended')}</div>`
+                    : `<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-500">Active</span>`;
+
+                return `
+                    <tr class="${u.banned ? 'bg-rose-500/5' : ''}">
+                        <td class="py-3.5 px-4">
+                            <div class="font-bold">${escapeHTML(u.name)}</div>
+                            <div class="text-xs themed-muted font-mono">@${escapeHTML(u.username)} • ${escapeHTML(u.email)}</div>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs">
+                            <div class="font-mono font-semibold">${escapeHTML(u.id)}</div>
+                            <div class="themed-muted">${formatDateTime(u.joinedAt)}</div>
+                        </td>
+                        <td class="py-3.5 px-4 font-mono font-extrabold text-sm themed-accent-text">
+                            ${Number(u.credits).toLocaleString()} CR
+                        </td>
+                        <td class="py-3.5 px-4 text-xs">
+                            ${statusBadge}
+                        </td>
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="inline-flex flex-wrap items-center justify-end gap-1.5">
+                                <button type="button" ${u.banned ? 'disabled' : `onclick="openCreditModal('${u.id}')"`}
+                                    class="px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition ${
+                                        u.banned
+                                            ? 'opacity-40 cursor-not-allowed themed-subtle'
+                                            : 'bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-500 border-emerald-500/30 cursor-pointer'
+                                    }">
+                                    Credits
+                                </button>
+                                ${
+                                    u.banned
+                                        ? `<button type="button" onclick="unbanUser('${u.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-sky-500/15 hover:bg-sky-500/25 text-sky-400 border border-sky-500/30 cursor-pointer">
+                                               Unban
+                                           </button>`
+                                        : `<button type="button" onclick="openBanModal('${u.id}')" class="px-2.5 py-1.5 rounded-lg text-xs font-semibold bg-rose-500/15 hover:bg-rose-500/25 text-rose-500 border border-rose-500/30 cursor-pointer">
+                                               Ban
+                                           </button>`
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openCreateUserModal() {
+            document.getElementById('cuser-name').value = '';
+            document.getElementById('cuser-username').value = '';
+            document.getElementById('cuser-email').value = '';
+            document.getElementById('cuser-credits').value = '150';
+            document.getElementById('cuser-password').value = 'user123';
+            openModal('create-user-modal');
+        }
+
+        function handleAdminCreateUser(e) {
+            e.preventDefault();
+            const name = document.getElementById('cuser-name').value.trim();
+            const username = document.getElementById('cuser-username').value.trim().toLowerCase().replace(/[^a-z0-9_]/g, '');
+            const email = document.getElementById('cuser-email').value.trim().toLowerCase();
+            const credits = Math.max(0, Number(document.getElementById('cuser-credits').value) || 0);
+            const password = document.getElementById('cuser-password').value;
+
+            if (state.users.some(u => u.email.toLowerCase() === email || u.username.toLowerCase() === username)) {
+                showToast('A user with that email or username already exists.', 'error');
+                return;
+            }
+
+            const newUser = {
+                id: 'USR-' + Math.floor(1000 + Math.random() * 9000),
+                name,
+                username,
+                email,
+                password,
+                credits,
+                totalCredited: credits,
+                totalSpent: 0,
+                banned: false,
+                banReason: '',
+                joinedAt: new Date().toISOString(),
+                transactions: credits > 0 ? [{
+                    id: 'tx-' + Date.now(),
+                    type: 'grant',
+                    note: 'Initial credits assigned by Admin',
+                    amount: credits,
+                    timestamp: new Date().toISOString()
+                }] : []
+            };
+
+            state.users.unshift(newUser);
+            addAuditLog('user', `Admin created user ${name} (@${username}) with ${credits} starting credits.`);
+            saveState();
+            closeModal('create-user-modal');
+            renderAdminAll();
+            showToast(`User ${name} created.`, 'success');
+        }
+
+        function openCreditModal(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+            if (user.banned) {
+                showToast('Cannot modify credits for a banned user.', 'warning');
+                return;
+            }
+
+            document.getElementById('cred-target-user-id').value = user.id;
+            document.getElementById('cred-target-name').textContent = user.name;
+            document.getElementById('cred-target-handle').textContent = `@${user.username} (${user.id})`;
+            document.getElementById('cred-target-bal').textContent = `${Number(user.credits).toLocaleString()} CR`;
+            document.getElementById('cred-amount').value = '';
+            document.getElementById('cred-note').value = '';
+            document.querySelector('input[name="cred-mode"][value="grant"]').checked = true;
+            openModal('credit-modal');
+        }
+
+        function handleCreditSubmit(e) {
+            e.preventDefault();
+            const userId = document.getElementById('cred-target-user-id').value;
+            const mode = document.querySelector('input[name="cred-mode"]:checked').value;
+            const amount = Number(document.getElementById('cred-amount').value);
+            const note = document.getElementById('cred-note').value.trim();
+
+            const user = state.users.find(u => u.id === userId);
+            if (!user || amount <= 0) return;
+
+            if (user.banned) {
+                showToast('Banned user cannot receive or lose credits.', 'error');
+                return;
+            }
+
+            if (mode === 'grant') {
+                user.credits = Number(user.credits) + amount;
+                user.totalCredited = Number(user.totalCredited || 0) + amount;
+                user.transactions.unshift({
+                    id: 'tx-' + Date.now(),
+                    type: 'grant',
+                    note: note || 'Credit grant from Admin',
+                    amount,
+                    timestamp: new Date().toISOString()
+                });
+                addAuditLog('credit', `Granted +${amount} credits to ${user.name} (@${user.username}) — ${note || 'Admin grant'}.`);
+                showToast(`Granted +${amount} credits to ${user.name}.`, 'success');
+            } else {
+                const actualDeduct = Math.min(Number(user.credits), amount);
+                user.credits = Number(user.credits) - actualDeduct;
+                user.totalSpent = Number(user.totalSpent || 0) + actualDeduct;
+                user.transactions.unshift({
+                    id: 'tx-' + Date.now(),
+                    type: 'deduct',
+                    note: note || 'Credit deduction by Admin',
+                    amount: actualDeduct,
+                    timestamp: new Date().toISOString()
+                });
+                addAuditLog('credit', `Deducted -${actualDeduct} credits from ${user.name} (@${user.username}) — ${note || 'Admin deduction'}.`);
+                showToast(`Deducted -${actualDeduct} credits from ${user.name}.`, 'info');
+            }
+
+            saveState();
+            closeModal('credit-modal');
+            renderAdminAll();
+        }
+
+        function openBanModal(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+            document.getElementById('ban-target-user-id').value = user.id;
+            document.getElementById('ban-target-label').textContent = `${user.name} (@${user.username}) • ${user.id}`;
+            document.getElementById('ban-reason-input').value = '';
+            openModal('ban-modal');
+        }
+
+        function handleBanSubmit(e) {
+            e.preventDefault();
+            const userId = document.getElementById('ban-target-user-id').value;
+            const reason = document.getElementById('ban-reason-input').value.trim();
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+
+            user.banned = true;
+            user.banReason = reason || 'Banned by administrator';
+
+            addAuditLog('ban', `Banned user ${user.name} (@${user.username}) — Reason: ${user.banReason}.`);
+            saveState();
+            closeModal('ban-modal');
+            renderAdminAll();
+            showToast(`${user.name} has been banned.`, 'warning');
+        }
+
+        function unbanUser(userId) {
+            const user = state.users.find(u => u.id === userId);
+            if (!user) return;
+            user.banned = false;
+            user.banReason = '';
+            addAuditLog('ban', `Unbanned user ${user.name} (@${user.username}).`);
+            saveState();
+            renderAdminAll();
+            showToast(`${user.name} is unbanned and active again.`, 'success');
+        }
+
+        // --- Categories, Items & Website Item Publisher ---
+        function renderAdminCatalog() {
+            const catList = document.getElementById('admin-categories-list');
+            document.getElementById('adm-cat-count').textContent = state.categories.length;
+
+            if (state.categories.length === 0) {
+                catList.innerHTML = `<div class="text-xs themed-muted py-4 text-center">No categories yet. Click "Add Category".</div>`;
+            } else {
+                catList.innerHTML = state.categories.map(cat => {
+                    const itemCount = state.items.filter(i => i.categoryId === cat.id).length;
+                    return `
+                        <div class="p-3 rounded-xl border themed-subtle flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="text-xl">${escapeHTML(cat.icon)}</span>
+                                <div class="truncate">
+                                    <div class="text-xs sm:text-sm font-bold truncate">${escapeHTML(cat.name)}</div>
+                                    <div class="text-[11px] themed-muted">${itemCount} ${itemCount === 1 ? 'item' : 'items'} • ${escapeHTML(cat.color)}</div>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-1 shrink-0">
+                                <button type="button" onclick="openCategoryModal('${cat.id}')" class="p-1.5 rounded-lg border themed-surface hover:opacity-80 cursor-pointer" title="Edit Category">
+                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button type="button" onclick="deleteCategory('${cat.id}')" class="p-1.5 rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 cursor-pointer" title="Delete Category">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            const filterVal = document.getElementById('admin-item-filter')?.value || 'all';
+            const tbody = document.getElementById('admin-items-tbody');
+
+            const items = state.items.filter(i => {
+                if (filterVal === 'published') return i.published;
+                if (filterVal === 'draft') return !i.published;
+                return true;
+            });
+
+            if (items.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="py-8 text-center text-xs themed-muted">No items found for this filter.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = items.map(item => {
+                const cat = state.categories.find(c => c.id === item.categoryId);
+                return `
+                    <tr>
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-2.5">
+                                <span class="text-xl">${escapeHTML(item.icon)}</span>
+                                <div>
+                                    <div class="font-bold flex items-center gap-1.5">
+                                        <span>${escapeHTML(item.name)}</span>
+                                        ${item.badge ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded themed-accent-soft themed-accent-text">${escapeHTML(item.badge)}</span>` : ''}
+                                    </div>
+                                    <div class="text-xs themed-muted truncate max-w-xs">${escapeHTML(item.description)}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="py-3.5 px-4 text-xs">
+                            ${cat ? `${escapeHTML(cat.icon)} ${escapeHTML(cat.name)}` : '<span class="themed-muted">Unassigned</span>'}
+                        </td>
+                        <td class="py-3.5 px-4 text-xs font-mono">
+                            <div class="font-bold themed-accent-text">${Number(item.cost).toLocaleString()} CR</div>
+                            <div class="themed-muted">${item.unlimited ? 'Unlimited' : `Stock: ${item.stock}`}</div>
+                        </td>
+                        <td class="py-3.5 px-4">
+                            <button type="button" onclick="togglePublishItem('${item.id}')"
+                                class="px-2.5 py-1 rounded-full text-xs font-bold border transition cursor-pointer ${
+                                    item.published
+                                        ? 'bg-emerald-500/15 text-emerald-500 border-emerald-500/30 hover:bg-emerald-500/25'
+                                        : 'bg-amber-500/15 text-amber-500 border-amber-500/30 hover:bg-amber-500/25'
+                                }">
+                                ${item.published ? '● Published' : '○ Draft (Publish)'}
+                            </button>
+                        </td>
+                        <td class="py-3.5 px-4 text-right">
+                            <div class="inline-flex items-center gap-1">
+                                <button type="button" onclick="openItemModal('${item.id}')" class="p-1.5 rounded-lg border themed-subtle hover:opacity-80 cursor-pointer" title="Edit Item">
+                                    <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+                                </button>
+                                <button type="button" onclick="deleteItem('${item.id}')" class="p-1.5 rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 cursor-pointer" title="Delete Item">
+                                    <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        function openCategoryModal(categoryId = null) {
+            const existing = categoryId ? state.categories.find(c => c.id === categoryId) : null;
+            document.getElementById('category-modal-title').innerHTML = existing
+                ? `<i data-lucide="pencil" class="w-4 h-4 themed-accent-text"></i><span>Edit Category</span>`
+                : `<i data-lucide="folder-plus" class="w-4 h-4 themed-accent-text"></i><span>Add Category</span>`;
+            document.getElementById('edit-category-id').value = existing ? existing.id : '';
+            document.getElementById('cat-name').value = existing ? existing.name : '';
+            document.getElementById('cat-icon').value = existing ? existing.icon : '💳';
+            document.getElementById('cat-color').value = existing ? existing.color : 'indigo';
+            openModal('category-modal');
+        }
+
+        function handleCategorySubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-category-id').value;
+            const name = document.getElementById('cat-name').value.trim();
+            const icon = document.getElementById('cat-icon').value.trim() || '📁';
+            const color = document.getElementById('cat-color').value;
+
+            if (id) {
+                const cat = state.categories.find(c => c.id === id);
+                if (cat) {
+                    cat.name = name;
+                    cat.icon = icon;
+                    cat.color = color;
+                    addAuditLog('catalog', `Updated category "${name}".`);
+                    showToast('Category updated.', 'success');
+                }
+            } else {
+                state.categories.push({
+                    id: 'cat-' + Date.now(),
+                    name,
+                    icon,
+                    color
+                });
+                addAuditLog('catalog', `Added new category "${name}" (${icon}).`);
+                showToast('Category added.', 'success');
+            }
+
+            saveState();
+            closeModal('category-modal');
+            renderAdminAll();
+        }
+
+        function deleteCategory(id) {
+            const cat = state.categories.find(c => c.id === id);
+            if (!cat) return;
+            state.categories = state.categories.filter(c => c.id !== id);
+            addAuditLog('catalog', `Deleted category "${cat.name}".`);
+            saveState();
+            renderAdminAll();
+            showToast(`Category "${cat.name}" removed.`, 'info');
+        }
+
+        function toggleItemStockDisabled() {
+            const unlim = document.getElementById('item-unlimited').checked;
+            document.getElementById('item-stock').disabled = unlim;
+        }
+
+        function openItemModal(itemId = null) {
+            if (state.categories.length === 0) {
+                showToast('Please create a category first before adding an item.', 'warning');
+                return;
+            }
+
+            const select = document.getElementById('item-category');
+            select.innerHTML = state.categories.map(c =>
+                `<option value="${c.id}">${escapeHTML(c.icon)} ${escapeHTML(c.name)}</option>`
+            ).join('');
+
+            const existing = itemId ? state.items.find(i => i.id === itemId) : null;
+            document.getElementById('item-modal-title').innerHTML = existing
+                ? `<i data-lucide="pencil" class="w-4 h-4 themed-accent-text"></i><span>Edit Item</span>`
+                : `<i data-lucide="package-plus" class="w-4 h-4 themed-accent-text"></i><span>Add Item</span>`;
+
+            document.getElementById('edit-item-id').value = existing ? existing.id : '';
+            document.getElementById('item-name').value = existing ? existing.name : '';
+            document.getElementById('item-icon').value = existing ? existing.icon : '💳';
+            document.getElementById('item-category').value = existing ? existing.categoryId : state.categories[0].id;
+            document.getElementById('item-badge').value = existing ? (existing.badge || '') : '';
+            document.getElementById('item-cost').value = existing ? existing.cost : 50;
+            document.getElementById('item-unlimited').checked = existing ? Boolean(existing.unlimited) : false;
+            document.getElementById('item-stock').value = existing ? existing.stock : 20;
+            document.getElementById('item-desc').value = existing ? existing.description : '';
+            document.getElementById('item-published').checked = existing ? Boolean(existing.published) : true;
+
+            toggleItemStockDisabled();
+            openModal('item-modal');
+        }
+
+        function handleItemSubmit(e) {
+            e.preventDefault();
+            const id = document.getElementById('edit-item-id').value;
+            const name = document.getElementById('item-name').value.trim();
+            const icon = document.getElementById('item-icon').value.trim() || '🎁';
+            const categoryId = document.getElementById('item-category').value;
+            const badge = document.getElementById('item-badge').value;
+            const cost = Math.max(1, Number(document.getElementById('item-cost').value) || 1);
+            const unlimited = document.getElementById('item-unlimited').checked;
+            const stock = unlimited ? 0 : Math.max(0, Number(document.getElementById('item-stock').value) || 0);
+            const description = document.getElementById('item-desc').value.trim();
+            const published = document.getElementById('item-published').checked;
+
+            if (id) {
+                const item = state.items.find(i => i.id === id);
+                if (item) {
+                    Object.assign(item, { name, icon, categoryId, badge, cost, unlimited, stock, description, published });
+                    addAuditLog('item', `Updated item "${name}" (${published ? 'Published' : 'Draft'}).`);
+                    showToast('Item updated.', 'success');
+                }
+            } else {
+                state.items.unshift({
+                    id: 'itm-' + Date.now(),
+                    name,
+                    icon,
+                    categoryId,
+                    badge,
+                    cost,
+                    unlimited,
+                    stock,
+                    description,
+                    published
+                });
+                addAuditLog('item', `Created item "${name}" (${cost} CR) — ${published ? 'Published to website' : 'Saved as Draft'}.`);
+                showToast('Item saved!', 'success');
+            }
+
+            saveState();
+            closeModal('item-modal');
+            renderAdminAll();
+        }
+
+        function togglePublishItem(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            item.published = !item.published;
+            addAuditLog('item', `${item.published ? 'Published' : 'Unpublished'} item "${item.name}" on the website.`);
+            saveState();
+            renderAdminAll();
+            showToast(item.published ? `"${item.name}" is now live on the website!` : `"${item.name}" moved to Draft.`, 'success');
+        }
+
+        function deleteItem(itemId) {
+            const item = state.items.find(i => i.id === itemId);
+            if (!item) return;
+            state.items = state.items.filter(i => i.id !== itemId);
+            addAuditLog('item', `Deleted item "${item.name}".`);
+            saveState();
+            renderAdminAll();
+            showToast('Item deleted.', 'info');
+        }
+
+        // --- Announcements ---
+        function handleCreateAnnouncement(e) {
+            e.preventDefault();
+            const title = document.getElementById('ann-title').value.trim();
+            const priority = document.getElementById('ann-priority').value;
+            const message = document.getElementById('ann-message').value.trim();
+
+            state.announcements.unshift({
+                id: 'ann-' + Date.now(),
+                title,
+                priority,
+                message,
+                active: true,
+                createdAt: new Date().toISOString()
+            });
+
+            addAuditLog('announcement', `Published announcement: "${title}" [${priority.toUpperCase()}].`);
+            saveState();
+            document.getElementById('announcement-form').reset();
+            renderAdminAll();
+            showToast('Announcement published!', 'success');
+        }
+
+        function renderAdminAnnouncements() {
+            const list = document.getElementById('admin-announcements-list');
+            document.getElementById('adm-ann-total').textContent = `${state.announcements.length} total`;
+
+            if (state.announcements.length === 0) {
+                list.innerHTML = `<div class="text-xs themed-muted py-6 text-center">No announcements created yet.</div>`;
+                return;
+            }
+
+            list.innerHTML = state.announcements.map(a => `
+                <div class="p-3.5 rounded-xl border themed-subtle flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                    <div class="space-y-1 min-w-0">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-xs font-bold">${escapeHTML(a.title)}</span>
+                            <span class="text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border themed-surface">${escapeHTML(a.priority)}</span>
+                            <span class="text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                                a.active ? 'bg-emerald-500/15 text-emerald-500' : 'bg-slate-500/15 themed-muted'
+                            }">${a.active ? 'Active' : 'Inactive'}</span>
+                        </div>
+                        <p class="text-xs themed-muted">${escapeHTML(a.message)}</p>
+                    </div>
+                    <div class="flex items-center gap-1.5 shrink-0">
+                        <button type="button" onclick="toggleAnnouncementActive('${a.id}')" class="px-2.5 py-1 rounded-lg text-xs font-semibold border themed-surface hover:opacity-80 cursor-pointer">
+                            ${a.active ? 'Disable' : 'Enable'}
+                        </button>
+                        <button type="button" onclick="deleteAnnouncement('${a.id}')" class="p-1.5 rounded-lg border border-rose-500/30 text-rose-500 hover:bg-rose-500/10 cursor-pointer">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function toggleAnnouncementActive(id) {
+            const ann = state.announcements.find(a => a.id === id);
+            if (!ann) return;
+            ann.active = !ann.active;
+            addAuditLog('announcement', `${ann.active ? 'Enabled' : 'Disabled'} announcement "${ann.title}".`);
+            saveState();
+            renderAdminAll();
+        }
+
+        function deleteAnnouncement(id) {
+            const ann = state.announcements.find(a => a.id === id);
+            if (!ann) return;
+            state.announcements = state.announcements.filter(a => a.id !== id);
+            addAuditLog('announcement', `Deleted announcement "${ann.title}".`);
+            saveState();
+            renderAdminAll();
+            showToast('Announcement deleted.', 'info');
+        }
+
+        // --- Audit Log ---
+        function renderAdminLogs() {
+            const container = document.getElementById('admin-audit-log');
+            document.getElementById('adm-log-count').textContent = `${state.logs.length} events`;
+
+            if (state.logs.length === 0) {
+                container.innerHTML = `<div class="py-6 text-center text-xs themed-muted">No audit events recorded yet.</div>`;
+                return;
+            }
+
+            container.innerHTML = state.logs.map(log => `
+                <div class="py-3 flex items-start justify-between gap-3 text-xs">
+                    <div class="flex items-start gap-2.5">
+                        <span class="px-2 py-0.5 rounded font-mono text-[10px] font-bold uppercase themed-accent-soft themed-accent-text shrink-0 mt-0.5">
+                            ${escapeHTML(log.type)}
+                        </span>
+                        <span class="leading-relaxed">${escapeHTML(log.text)}</span>
+                    </div>
+                    <span class="text-[11px] themed-muted shrink-0">${formatDateTime(log.timestamp)}</span>
+                </div>
+            `).join('');
+        }
+
+        // --- Reset Demo Data ---
+        function confirmResetDemoData() {
+            localStorage.removeItem(STORAGE_KEY);
+            state = JSON.parse(JSON.stringify(DEFAULT_STATE));
+            state.session = { role: 'admin', userId: null };
+            addAuditLog('system', 'Reset platform data back to default demo state.');
+            saveState();
+            closeModal('reset-modal');
+            renderActiveView();
+            showToast('Demo data reset to defaults!', 'success');
+        }
+
+        // =====================================================================
+        // INITIALIZATION
+        // =====================================================================
+        window.addEventListener('DOMContentLoaded', () => {
+            renderActiveView();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
